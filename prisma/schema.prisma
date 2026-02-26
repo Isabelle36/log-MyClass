@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
+model StudentInvite {
+  id          String   @id @default(uuid())
+  fullName    String
+  department  String
+  year        Int
+  rollNo      Int
+  token       String   @unique
+  isUsed      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@unique([department, year, rollNo])
+}
+
+model User {
+  id            String   @id @default(uuid())
+  clerkUserId   String   @unique
+  role          Role
+  createdAt     DateTime @default(now())
+
+  student       Student?
+  teacher       Teacher?
+}
+
+model Student {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  department  String
+  year        Int
+  rollNo      Int
+  isActive Boolean @default(true)
+  academicYear String
+
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@unique([department, year, rollNo])
+}
+
+model Teacher {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  department String
+
+  user       User     @relation(fields: [userId], references: [id])
+}
