@@ -44,6 +44,7 @@ model Student {
   rollNo      Int
   isActive Boolean @default(true)
   academicYear String
+  attendances  Attendance[]
 
   user        User     @relation(fields: [userId], references: [id])
 
@@ -56,4 +57,39 @@ model Teacher {
   department String
 
   user       User     @relation(fields: [userId], references: [id])
+}
+
+model Attendance {
+  id         String   @id @default(uuid())
+  sessionId  String
+  studentId  String
+  latitude   Float
+  longitude  Float
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  session    Session  @relation(fields: [sessionId], references: [id])
+  student    Student  @relation(fields: [studentId], references: [id])
+
+  @@unique([sessionId, studentId])
+}
+
+model Session {
+  id         String   @id @default(uuid())
+  department String
+  year       Int
+  subject    String
+  createdBy  String   
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  attendances Attendance[]
+}
+
+model SuspiciousLog {
+  id         String   @id @default(uuid())
+  sessionId  String
+  reason     String
+  createdAt  DateTime @default(now())
 }
