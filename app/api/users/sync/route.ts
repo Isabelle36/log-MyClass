@@ -126,18 +126,23 @@ export async function POST(req: Request) {
     setupRateLimitStore.delete(rateLimitKey)
   }
 
-  const adminExists = await prisma.user.findFirst({
-    where: { role: "ADMIN" }
-  })
+ const adminExists = await prisma.user.findFirst({
+  where: { role: "ADMIN" }
+})
 
-  const role: "ADMIN" | "STUDENT" = adminExists ? "STUDENT" : "ADMIN"
+if (adminExists) {
+  return NextResponse.json(
+    { error: "Access denied" },
+    { status: 403 }
+  )
+}
 
-  const user = await prisma.user.create({
-    data: {
-      clerkUserId: userId,
-      role
-    }
-  })
+const user = await prisma.user.create({
+  data: {
+    clerkUserId: userId,
+    role: "ADMIN"
+  }
+})
 
   return NextResponse.json(user)
 }

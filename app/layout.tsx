@@ -5,6 +5,7 @@ import ErrorBoundary from "./Components/ErrorBoundary";
 import "./globals.css";
 import { cn } from "../lib/utils";
 import { Show, UserButton, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { prisma } from "@/lib/prisma";
 
 
 const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
@@ -24,11 +25,16 @@ export const metadata: Metadata = {
   description: "Smart QR Attendance",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const adminExists = await prisma.user.findFirst({
+    where: { role: "ADMIN" },
+    select: { id: true }
+  })
+
   return (
     <html lang="en" className={cn("font-sans", figtree.variable)}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
@@ -37,7 +43,7 @@ export default function RootLayout({
             <header>
               <Show when="signed-out">
                 <SignInButton />
-                <SignUpButton />
+                {!adminExists && <SignUpButton />}
               </Show>
               <Show when="signed-in">
                 <UserButton />
