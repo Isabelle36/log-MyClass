@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "font-pairing-suggester": {
+      "source": "onewave-ai/claude-skills",
+      "sourceType": "github",
+      "computedHash": "018187bb7da8f970ee06474e1f32d3fa232c7d0bf25ebf0b4912d41f25e503ab"
+    }
+  }
+}
