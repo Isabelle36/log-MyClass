@@ -3,7 +3,9 @@ import { Geist, Geist_Mono, Figtree } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs'
 import ErrorBoundary from "./Components/ErrorBoundary";
 import "./globals.css";
-import { cn } from "@/lib/utils";
+import { cn } from "../lib/utils";
+import { Show, UserButton, SignInButton, SignUpButton } from "@clerk/nextjs";
+
 
 const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
 
@@ -29,14 +31,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn("font-sans", figtree.variable)}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ErrorBoundary>
-         <ClerkProvider>
-          {children}
-          </ClerkProvider>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ClerkProvider>
+          <ErrorBoundary>
+            <header>
+              <Show when="signed-out">
+                <SignInButton />
+                <SignUpButton />
+              </Show>
+              <Show when="signed-in">
+                <UserButton />
+              </Show>
+            </header>
+            {children}
           </ErrorBoundary>
+        </ClerkProvider>
       </body>
     </html>
   );
