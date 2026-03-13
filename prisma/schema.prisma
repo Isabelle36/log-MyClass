@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  engineType = "library"
+   output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -25,6 +25,15 @@ model StudentInvite {
   createdAt   DateTime @default(now())
 
   @@unique([department, year, rollNo])
+}
+
+model TeacherInvite {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  department  String
+  token       String   @unique
+  isUsed      Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }
 
 model User {

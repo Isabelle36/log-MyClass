@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Figtree } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs'
 import ErrorBoundary from "./Components/ErrorBoundary";
+import AuthHeader from "./Components/AuthHeader";
 import "./globals.css";
 import { cn } from "../lib/utils";
-import { Show, UserButton, SignInButton, SignUpButton } from "@clerk/nextjs";
 
 
 const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   description: "Smart QR Attendance",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -32,17 +32,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", figtree.variable)}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ClerkProvider>
+        <ClerkProvider signInFallbackRedirectUrl="/dashboard" signUpFallbackRedirectUrl="/dashboard">
           <ErrorBoundary>
-            <header>
-              <Show when="signed-out">
-                <SignInButton />
-                <SignUpButton />
-              </Show>
-              <Show when="signed-in">
-                <UserButton />
-              </Show>
-            </header>
+            <AuthHeader />
             {children}
           </ErrorBoundary>
         </ClerkProvider>

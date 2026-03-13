@@ -24,8 +24,9 @@ export default function SetupForm() {
     })
 
     if (!res.ok) {
+      const payload = await res.json().catch(() => null)
+
       if (res.status === 429) {
-        const payload = await res.json().catch(() => null)
         const retryAfter = payload?.retryAfter
         setError(
           retryAfter
@@ -33,7 +34,7 @@ export default function SetupForm() {
             : "Too many attempts. Try again later."
         )
       } else {
-        setError("Access denied. Contact your institution administrator.")
+        setError(payload?.error ?? "Access denied. Contact your institution administrator.")
       }
       setLoading(false)
       return

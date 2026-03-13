@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
+import { syncUserWithDatabase } from "@/lib/auth/sync-user"
 
 type AttemptBucket = {
   count: number
@@ -78,10 +79,42 @@ export async function POST(req: Request) {
     return NextResponse.json(existingUser)
   }
 
+  const adminExists = await prisma.user.findFirst({
+    where: { role: "ADMIN" },
+    select: { id: true },
+  })
+
+  // Post-bootstrap flow: only invited users (via Clerk metadata) can sync.
+  if (adminExists) {
+    const syncResult = await syncUserWithDatabase({ clerkUserId: userId })
+
+    if (!syncResult.user) {
+      return NextResponse.json(
+        { error: "This account is not invited for this institution." },
+        { status: 403 }
+      )
+    }
+
+    return NextResponse.json(syncResult.user)
+  }
+
   const adminSetupKeyHash = process.env.ADMIN_SETUP_KEY_HASH
+    ?.trim()
+    .replace(/^['\"]|['\"]$/g, "")
   if (!adminSetupKeyHash) {
     return NextResponse.json(
       { error: "Server missing ADMIN_SETUP_KEY_HASH" },
+      { status: 500 }
+    )
+  }
+
+  const isBcryptHash = /^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/.test(adminSetupKeyHash)
+  if (!isBcryptHash) {
+    return NextResponse.json(
+      {
+        error:
+          "Server misconfigured ADMIN_SETUP_KEY_HASH. Escape '$' as '\\$' in .env and restart the server."
+      },
       { status: 500 }
     )
   }
@@ -117,7 +150,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(
-      { error: "Access denied" },
+      { error: "Invalid setup key" },
       { status: 403 }
     )
   }
@@ -126,18 +159,23 @@ export async function POST(req: Request) {
     setupRateLimitStore.delete(rateLimitKey)
   }
 
-  const adminExists = await prisma.user.findFirst({
+  const adminAlreadyCreated = await prisma.user.findFirst({
     where: { role: "ADMIN" }
   })
 
-  const role: "ADMIN" | "STUDENT" = adminExists ? "STUDENT" : "ADMIN"
+  if (adminAlreadyCreated) {
+    return NextResponse.json(
+      { error: "An admin account already exists" },
+      { status: 403 }
+    )
+  }
 
-  const user = await prisma.user.create({
-    data: {
-      clerkUserId: userId,
-      role
-    }
-  })
+const user = await prisma.user.create({
+  data: {
+    clerkUserId: userId,
+    role: "ADMIN"
+  }
+})
 
   return NextResponse.json(user)
 }
