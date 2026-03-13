@@ -26,9 +26,10 @@ async function main() {
     }
 
     const hash = await bcrypt.hash(key, rounds)
+    const envSafeHash = hash.replace(/\$/g, "\\$")
 
     console.log("\nCopy this into .env:")
-    console.log(`ADMIN_SETUP_KEY_HASH=\"${hash}\"`)
+    console.log(`ADMIN_SETUP_KEY_HASH=\"${envSafeHash}\"`)
   } finally {
     rl.close()
   }
