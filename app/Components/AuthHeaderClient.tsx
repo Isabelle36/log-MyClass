@@ -2,19 +2,14 @@
 
 import {
   Show,
-  SignInButton,
-  SignUpButton,
   UserButton,
 } from "@clerk/nextjs"
+import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-type AuthHeaderClientProps = {
-  adminExists: boolean
-}
+const HIDDEN_HEADER_PREFIXES = ["/sign-in", "/sign-up", "/teacher/invite", "/student/invite", "/no-access"]
 
-const HIDDEN_HEADER_PREFIXES = ["/sign-in", "/sign-up", "/teacher/invite", "/no-access"]
-
-export default function AuthHeaderClient({ adminExists }: AuthHeaderClientProps) {
+export default function AuthHeaderClient() {
   const pathname = usePathname()
 
   const hideHeader = HIDDEN_HEADER_PREFIXES.some((prefix) =>
@@ -28,8 +23,8 @@ export default function AuthHeaderClient({ adminExists }: AuthHeaderClientProps)
   return (
     <header>
       <Show when="signed-out">
-        <SignInButton />
-        {!adminExists && <SignUpButton />}
+        <Link href="/sign-in">Sign in</Link>
+        <Link href="/sign-up" className="ml-3">Sign up</Link>
       </Show>
 
       <Show when="signed-in">

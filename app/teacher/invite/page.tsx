@@ -48,7 +48,7 @@ export default async function TeacherInvitePage({
     )
   }
 
-  if (!invite || invite.isUsed) {
+  if (!invite) {
     notFound()
   }
 
@@ -83,9 +83,20 @@ export default async function TeacherInvitePage({
   const invitedEmail = invite.email.trim().toLowerCase()
   const signedInEmail = primaryEmail.trim().toLowerCase()
 
- if (invitedEmail !== signedInEmail) {
-   redirect("/no-access")
+  if (invitedEmail !== signedInEmail) {
+    redirect("/no-access")
   }
+
+  if (invite.isUsed) {
+    redirect("/teacher")
+  }
+
+  await client.users.updateUserMetadata(userId, {
+    publicMetadata: {
+      role: "TEACHER",
+      department: invite.department,
+    },
+  })
 
   const syncResult = await syncUserWithDatabase({
     clerkUserId: userId,

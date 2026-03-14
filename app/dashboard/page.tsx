@@ -1,36 +1,28 @@
+import { getCurrentPrismaUser } from "@/lib/auth"
 import { auth } from "@clerk/nextjs/server"
-import SetupForm from "@/components/ui/SetupForm"
 import { redirect } from "next/navigation"
-import { syncUserWithDatabase } from "@/lib/auth/sync-user"
-
 
 export default async function Dashboard() {
-  const { userId, redirectToSignIn } = await auth()
+  const { userId } = await auth()
 
   if (!userId) {
-    return redirectToSignIn({ returnBackUrl: "/dashboard" })
+    redirect("/sign-in")
   }
 
-  const synced = await syncUserWithDatabase({ clerkUserId: userId })
-  const user = synced.user
+  const dbUser = await getCurrentPrismaUser()
 
-  if (!user) {
-    if (!synced.adminExists) {
-      return <SetupForm />
-    }
-
-    // System already bootstrapped and this user is not an invited role.
+  if (!dbUser) {
     redirect("/no-access")
   }
 
-  if (user.role === "ADMIN") redirect("/admin")
-  if (user.role === "TEACHER") redirect("/teacher")
-  if (user.role === "STUDENT") redirect("/student")
+  if (dbUser.role === "ADMIN") redirect("/admin")
+  if (dbUser.role === "TEACHER") redirect("/teacher")
+  if (dbUser.role === "STUDENT") redirect("/student")
 
   return (
     <div>
       <h1>Dashboard</h1>
-      <p>Your role: {user.role}</p>
+      <p>Your role: {dbUser.role}</p>
     </div>
   )
 }
