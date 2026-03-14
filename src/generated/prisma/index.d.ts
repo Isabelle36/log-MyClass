@@ -1610,6 +1610,7 @@ export namespace Prisma {
   export type StudentInviteMinAggregateOutputType = {
     id: string | null
     fullName: string | null
+    email: string | null
     department: string | null
     year: number | null
     rollNo: number | null
@@ -1621,6 +1622,7 @@ export namespace Prisma {
   export type StudentInviteMaxAggregateOutputType = {
     id: string | null
     fullName: string | null
+    email: string | null
     department: string | null
     year: number | null
     rollNo: number | null
@@ -1632,6 +1634,7 @@ export namespace Prisma {
   export type StudentInviteCountAggregateOutputType = {
     id: number
     fullName: number
+    email: number
     department: number
     year: number
     rollNo: number
@@ -1655,6 +1658,7 @@ export namespace Prisma {
   export type StudentInviteMinAggregateInputType = {
     id?: true
     fullName?: true
+    email?: true
     department?: true
     year?: true
     rollNo?: true
@@ -1666,6 +1670,7 @@ export namespace Prisma {
   export type StudentInviteMaxAggregateInputType = {
     id?: true
     fullName?: true
+    email?: true
     department?: true
     year?: true
     rollNo?: true
@@ -1677,6 +1682,7 @@ export namespace Prisma {
   export type StudentInviteCountAggregateInputType = {
     id?: true
     fullName?: true
+    email?: true
     department?: true
     year?: true
     rollNo?: true
@@ -1775,6 +1781,7 @@ export namespace Prisma {
   export type StudentInviteGroupByOutputType = {
     id: string
     fullName: string
+    email: string | null
     department: string
     year: number
     rollNo: number
@@ -1805,6 +1812,7 @@ export namespace Prisma {
   export type StudentInviteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     fullName?: boolean
+    email?: boolean
     department?: boolean
     year?: boolean
     rollNo?: boolean
@@ -1816,6 +1824,7 @@ export namespace Prisma {
   export type StudentInviteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     fullName?: boolean
+    email?: boolean
     department?: boolean
     year?: boolean
     rollNo?: boolean
@@ -1827,6 +1836,7 @@ export namespace Prisma {
   export type StudentInviteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     fullName?: boolean
+    email?: boolean
     department?: boolean
     year?: boolean
     rollNo?: boolean
@@ -1838,6 +1848,7 @@ export namespace Prisma {
   export type StudentInviteSelectScalar = {
     id?: boolean
     fullName?: boolean
+    email?: boolean
     department?: boolean
     year?: boolean
     rollNo?: boolean
@@ -1846,7 +1857,7 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type StudentInviteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fullName" | "department" | "year" | "rollNo" | "token" | "isUsed" | "createdAt", ExtArgs["result"]["studentInvite"]>
+  export type StudentInviteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fullName" | "email" | "department" | "year" | "rollNo" | "token" | "isUsed" | "createdAt", ExtArgs["result"]["studentInvite"]>
 
   export type $StudentInvitePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "StudentInvite"
@@ -1854,6 +1865,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       fullName: string
+      email: string | null
       department: string
       year: number
       rollNo: number
@@ -2285,6 +2297,7 @@ export namespace Prisma {
   interface StudentInviteFieldRefs {
     readonly id: FieldRef<"StudentInvite", 'String'>
     readonly fullName: FieldRef<"StudentInvite", 'String'>
+    readonly email: FieldRef<"StudentInvite", 'String'>
     readonly department: FieldRef<"StudentInvite", 'String'>
     readonly year: FieldRef<"StudentInvite", 'Int'>
     readonly rollNo: FieldRef<"StudentInvite", 'Int'>
@@ -3678,6 +3691,7 @@ export namespace Prisma {
   export type UserMinAggregateOutputType = {
     id: string | null
     clerkUserId: string | null
+    email: string | null
     role: $Enums.Role | null
     createdAt: Date | null
   }
@@ -3685,6 +3699,7 @@ export namespace Prisma {
   export type UserMaxAggregateOutputType = {
     id: string | null
     clerkUserId: string | null
+    email: string | null
     role: $Enums.Role | null
     createdAt: Date | null
   }
@@ -3692,6 +3707,7 @@ export namespace Prisma {
   export type UserCountAggregateOutputType = {
     id: number
     clerkUserId: number
+    email: number
     role: number
     createdAt: number
     _all: number
@@ -3701,6 +3717,7 @@ export namespace Prisma {
   export type UserMinAggregateInputType = {
     id?: true
     clerkUserId?: true
+    email?: true
     role?: true
     createdAt?: true
   }
@@ -3708,6 +3725,7 @@ export namespace Prisma {
   export type UserMaxAggregateInputType = {
     id?: true
     clerkUserId?: true
+    email?: true
     role?: true
     createdAt?: true
   }
@@ -3715,6 +3733,7 @@ export namespace Prisma {
   export type UserCountAggregateInputType = {
     id?: true
     clerkUserId?: true
+    email?: true
     role?: true
     createdAt?: true
     _all?: true
@@ -3795,6 +3814,7 @@ export namespace Prisma {
   export type UserGroupByOutputType = {
     id: string
     clerkUserId: string
+    email: string | null
     role: $Enums.Role
     createdAt: Date
     _count: UserCountAggregateOutputType | null
@@ -3819,6 +3839,7 @@ export namespace Prisma {
   export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     clerkUserId?: boolean
+    email?: boolean
     role?: boolean
     createdAt?: boolean
     student?: boolean | User$studentArgs<ExtArgs>
@@ -3828,6 +3849,7 @@ export namespace Prisma {
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     clerkUserId?: boolean
+    email?: boolean
     role?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -3835,6 +3857,7 @@ export namespace Prisma {
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     clerkUserId?: boolean
+    email?: boolean
     role?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -3842,11 +3865,12 @@ export namespace Prisma {
   export type UserSelectScalar = {
     id?: boolean
     clerkUserId?: boolean
+    email?: boolean
     role?: boolean
     createdAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clerkUserId" | "role" | "createdAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clerkUserId" | "email" | "role" | "createdAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     student?: boolean | User$studentArgs<ExtArgs>
     teacher?: boolean | User$teacherArgs<ExtArgs>
@@ -3863,6 +3887,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       clerkUserId: string
+      email: string | null
       role: $Enums.Role
       createdAt: Date
     }, ExtArgs["result"]["user"]>
@@ -4292,6 +4317,7 @@ export namespace Prisma {
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'String'>
     readonly clerkUserId: FieldRef<"User", 'String'>
+    readonly email: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'Role'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
   }
@@ -4762,7 +4788,9 @@ export namespace Prisma {
 
   export type StudentMinAggregateOutputType = {
     id: string | null
+    fullName: string | null
     userId: string | null
+    email: string | null
     department: string | null
     year: number | null
     rollNo: number | null
@@ -4772,7 +4800,9 @@ export namespace Prisma {
 
   export type StudentMaxAggregateOutputType = {
     id: string | null
+    fullName: string | null
     userId: string | null
+    email: string | null
     department: string | null
     year: number | null
     rollNo: number | null
@@ -4782,7 +4812,9 @@ export namespace Prisma {
 
   export type StudentCountAggregateOutputType = {
     id: number
+    fullName: number
     userId: number
+    email: number
     department: number
     year: number
     rollNo: number
@@ -4804,7 +4836,9 @@ export namespace Prisma {
 
   export type StudentMinAggregateInputType = {
     id?: true
+    fullName?: true
     userId?: true
+    email?: true
     department?: true
     year?: true
     rollNo?: true
@@ -4814,7 +4848,9 @@ export namespace Prisma {
 
   export type StudentMaxAggregateInputType = {
     id?: true
+    fullName?: true
     userId?: true
+    email?: true
     department?: true
     year?: true
     rollNo?: true
@@ -4824,7 +4860,9 @@ export namespace Prisma {
 
   export type StudentCountAggregateInputType = {
     id?: true
+    fullName?: true
     userId?: true
+    email?: true
     department?: true
     year?: true
     rollNo?: true
@@ -4921,7 +4959,9 @@ export namespace Prisma {
 
   export type StudentGroupByOutputType = {
     id: string
+    fullName: string
     userId: string
+    email: string | null
     department: string
     year: number
     rollNo: number
@@ -4950,7 +4990,9 @@ export namespace Prisma {
 
   export type StudentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    fullName?: boolean
     userId?: boolean
+    email?: boolean
     department?: boolean
     year?: boolean
     rollNo?: boolean
@@ -4963,7 +5005,9 @@ export namespace Prisma {
 
   export type StudentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    fullName?: boolean
     userId?: boolean
+    email?: boolean
     department?: boolean
     year?: boolean
     rollNo?: boolean
@@ -4974,7 +5018,9 @@ export namespace Prisma {
 
   export type StudentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    fullName?: boolean
     userId?: boolean
+    email?: boolean
     department?: boolean
     year?: boolean
     rollNo?: boolean
@@ -4985,7 +5031,9 @@ export namespace Prisma {
 
   export type StudentSelectScalar = {
     id?: boolean
+    fullName?: boolean
     userId?: boolean
+    email?: boolean
     department?: boolean
     year?: boolean
     rollNo?: boolean
@@ -4993,7 +5041,7 @@ export namespace Prisma {
     academicYear?: boolean
   }
 
-  export type StudentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "department" | "year" | "rollNo" | "isActive" | "academicYear", ExtArgs["result"]["student"]>
+  export type StudentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fullName" | "userId" | "email" | "department" | "year" | "rollNo" | "isActive" | "academicYear", ExtArgs["result"]["student"]>
   export type StudentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     attendances?: boolean | Student$attendancesArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -5014,7 +5062,9 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      fullName: string
       userId: string
+      email: string | null
       department: string
       year: number
       rollNo: number
@@ -5446,7 +5496,9 @@ export namespace Prisma {
    */
   interface StudentFieldRefs {
     readonly id: FieldRef<"Student", 'String'>
+    readonly fullName: FieldRef<"Student", 'String'>
     readonly userId: FieldRef<"Student", 'String'>
+    readonly email: FieldRef<"Student", 'String'>
     readonly department: FieldRef<"Student", 'String'>
     readonly year: FieldRef<"Student", 'Int'>
     readonly rollNo: FieldRef<"Student", 'Int'>
@@ -5903,18 +5955,21 @@ export namespace Prisma {
   export type TeacherMinAggregateOutputType = {
     id: string | null
     userId: string | null
+    email: string | null
     department: string | null
   }
 
   export type TeacherMaxAggregateOutputType = {
     id: string | null
     userId: string | null
+    email: string | null
     department: string | null
   }
 
   export type TeacherCountAggregateOutputType = {
     id: number
     userId: number
+    email: number
     department: number
     _all: number
   }
@@ -5923,18 +5978,21 @@ export namespace Prisma {
   export type TeacherMinAggregateInputType = {
     id?: true
     userId?: true
+    email?: true
     department?: true
   }
 
   export type TeacherMaxAggregateInputType = {
     id?: true
     userId?: true
+    email?: true
     department?: true
   }
 
   export type TeacherCountAggregateInputType = {
     id?: true
     userId?: true
+    email?: true
     department?: true
     _all?: true
   }
@@ -6014,6 +6072,7 @@ export namespace Prisma {
   export type TeacherGroupByOutputType = {
     id: string
     userId: string
+    email: string | null
     department: string
     _count: TeacherCountAggregateOutputType | null
     _min: TeacherMinAggregateOutputType | null
@@ -6037,6 +6096,7 @@ export namespace Prisma {
   export type TeacherSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    email?: boolean
     department?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["teacher"]>
@@ -6044,6 +6104,7 @@ export namespace Prisma {
   export type TeacherSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    email?: boolean
     department?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["teacher"]>
@@ -6051,6 +6112,7 @@ export namespace Prisma {
   export type TeacherSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    email?: boolean
     department?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["teacher"]>
@@ -6058,10 +6120,11 @@ export namespace Prisma {
   export type TeacherSelectScalar = {
     id?: boolean
     userId?: boolean
+    email?: boolean
     department?: boolean
   }
 
-  export type TeacherOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "department", ExtArgs["result"]["teacher"]>
+  export type TeacherOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "email" | "department", ExtArgs["result"]["teacher"]>
   export type TeacherInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -6080,6 +6143,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
+      email: string | null
       department: string
     }, ExtArgs["result"]["teacher"]>
     composites: {}
@@ -6507,6 +6571,7 @@ export namespace Prisma {
   interface TeacherFieldRefs {
     readonly id: FieldRef<"Teacher", 'String'>
     readonly userId: FieldRef<"Teacher", 'String'>
+    readonly email: FieldRef<"Teacher", 'String'>
     readonly department: FieldRef<"Teacher", 'String'>
   }
     
@@ -10194,6 +10259,7 @@ export namespace Prisma {
   export const StudentInviteScalarFieldEnum: {
     id: 'id',
     fullName: 'fullName',
+    email: 'email',
     department: 'department',
     year: 'year',
     rollNo: 'rollNo',
@@ -10220,6 +10286,7 @@ export namespace Prisma {
   export const UserScalarFieldEnum: {
     id: 'id',
     clerkUserId: 'clerkUserId',
+    email: 'email',
     role: 'role',
     createdAt: 'createdAt'
   };
@@ -10229,7 +10296,9 @@ export namespace Prisma {
 
   export const StudentScalarFieldEnum: {
     id: 'id',
+    fullName: 'fullName',
     userId: 'userId',
+    email: 'email',
     department: 'department',
     year: 'year',
     rollNo: 'rollNo',
@@ -10243,6 +10312,7 @@ export namespace Prisma {
   export const TeacherScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
+    email: 'email',
     department: 'department'
   };
 
@@ -10401,6 +10471,7 @@ export namespace Prisma {
     NOT?: StudentInviteWhereInput | StudentInviteWhereInput[]
     id?: StringFilter<"StudentInvite"> | string
     fullName?: StringFilter<"StudentInvite"> | string
+    email?: StringNullableFilter<"StudentInvite"> | string | null
     department?: StringFilter<"StudentInvite"> | string
     year?: IntFilter<"StudentInvite"> | number
     rollNo?: IntFilter<"StudentInvite"> | number
@@ -10412,6 +10483,7 @@ export namespace Prisma {
   export type StudentInviteOrderByWithRelationInput = {
     id?: SortOrder
     fullName?: SortOrder
+    email?: SortOrderInput | SortOrder
     department?: SortOrder
     year?: SortOrder
     rollNo?: SortOrder
@@ -10422,6 +10494,7 @@ export namespace Prisma {
 
   export type StudentInviteWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    email?: string
     token?: string
     department_year_rollNo?: StudentInviteDepartmentYearRollNoCompoundUniqueInput
     AND?: StudentInviteWhereInput | StudentInviteWhereInput[]
@@ -10433,11 +10506,12 @@ export namespace Prisma {
     rollNo?: IntFilter<"StudentInvite"> | number
     isUsed?: BoolFilter<"StudentInvite"> | boolean
     createdAt?: DateTimeFilter<"StudentInvite"> | Date | string
-  }, "id" | "token" | "department_year_rollNo">
+  }, "id" | "email" | "token" | "department_year_rollNo">
 
   export type StudentInviteOrderByWithAggregationInput = {
     id?: SortOrder
     fullName?: SortOrder
+    email?: SortOrderInput | SortOrder
     department?: SortOrder
     year?: SortOrder
     rollNo?: SortOrder
@@ -10457,6 +10531,7 @@ export namespace Prisma {
     NOT?: StudentInviteScalarWhereWithAggregatesInput | StudentInviteScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"StudentInvite"> | string
     fullName?: StringWithAggregatesFilter<"StudentInvite"> | string
+    email?: StringNullableWithAggregatesFilter<"StudentInvite"> | string | null
     department?: StringWithAggregatesFilter<"StudentInvite"> | string
     year?: IntWithAggregatesFilter<"StudentInvite"> | number
     rollNo?: IntWithAggregatesFilter<"StudentInvite"> | number
@@ -10528,6 +10603,7 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     id?: StringFilter<"User"> | string
     clerkUserId?: StringFilter<"User"> | string
+    email?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     createdAt?: DateTimeFilter<"User"> | Date | string
     student?: XOR<StudentNullableScalarRelationFilter, StudentWhereInput> | null
@@ -10537,6 +10613,7 @@ export namespace Prisma {
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
     clerkUserId?: SortOrder
+    email?: SortOrderInput | SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     student?: StudentOrderByWithRelationInput
@@ -10549,6 +10626,7 @@ export namespace Prisma {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
+    email?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     createdAt?: DateTimeFilter<"User"> | Date | string
     student?: XOR<StudentNullableScalarRelationFilter, StudentWhereInput> | null
@@ -10558,6 +10636,7 @@ export namespace Prisma {
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
     clerkUserId?: SortOrder
+    email?: SortOrderInput | SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -10571,6 +10650,7 @@ export namespace Prisma {
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"User"> | string
     clerkUserId?: StringWithAggregatesFilter<"User"> | string
+    email?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -10580,7 +10660,9 @@ export namespace Prisma {
     OR?: StudentWhereInput[]
     NOT?: StudentWhereInput | StudentWhereInput[]
     id?: StringFilter<"Student"> | string
+    fullName?: StringFilter<"Student"> | string
     userId?: StringFilter<"Student"> | string
+    email?: StringNullableFilter<"Student"> | string | null
     department?: StringFilter<"Student"> | string
     year?: IntFilter<"Student"> | number
     rollNo?: IntFilter<"Student"> | number
@@ -10592,7 +10674,9 @@ export namespace Prisma {
 
   export type StudentOrderByWithRelationInput = {
     id?: SortOrder
+    fullName?: SortOrder
     userId?: SortOrder
+    email?: SortOrderInput | SortOrder
     department?: SortOrder
     year?: SortOrder
     rollNo?: SortOrder
@@ -10609,6 +10693,8 @@ export namespace Prisma {
     AND?: StudentWhereInput | StudentWhereInput[]
     OR?: StudentWhereInput[]
     NOT?: StudentWhereInput | StudentWhereInput[]
+    fullName?: StringFilter<"Student"> | string
+    email?: StringNullableFilter<"Student"> | string | null
     department?: StringFilter<"Student"> | string
     year?: IntFilter<"Student"> | number
     rollNo?: IntFilter<"Student"> | number
@@ -10620,7 +10706,9 @@ export namespace Prisma {
 
   export type StudentOrderByWithAggregationInput = {
     id?: SortOrder
+    fullName?: SortOrder
     userId?: SortOrder
+    email?: SortOrderInput | SortOrder
     department?: SortOrder
     year?: SortOrder
     rollNo?: SortOrder
@@ -10638,7 +10726,9 @@ export namespace Prisma {
     OR?: StudentScalarWhereWithAggregatesInput[]
     NOT?: StudentScalarWhereWithAggregatesInput | StudentScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Student"> | string
+    fullName?: StringWithAggregatesFilter<"Student"> | string
     userId?: StringWithAggregatesFilter<"Student"> | string
+    email?: StringNullableWithAggregatesFilter<"Student"> | string | null
     department?: StringWithAggregatesFilter<"Student"> | string
     year?: IntWithAggregatesFilter<"Student"> | number
     rollNo?: IntWithAggregatesFilter<"Student"> | number
@@ -10652,6 +10742,7 @@ export namespace Prisma {
     NOT?: TeacherWhereInput | TeacherWhereInput[]
     id?: StringFilter<"Teacher"> | string
     userId?: StringFilter<"Teacher"> | string
+    email?: StringNullableFilter<"Teacher"> | string | null
     department?: StringFilter<"Teacher"> | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -10659,6 +10750,7 @@ export namespace Prisma {
   export type TeacherOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
+    email?: SortOrderInput | SortOrder
     department?: SortOrder
     user?: UserOrderByWithRelationInput
   }
@@ -10669,6 +10761,7 @@ export namespace Prisma {
     AND?: TeacherWhereInput | TeacherWhereInput[]
     OR?: TeacherWhereInput[]
     NOT?: TeacherWhereInput | TeacherWhereInput[]
+    email?: StringNullableFilter<"Teacher"> | string | null
     department?: StringFilter<"Teacher"> | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "userId">
@@ -10676,6 +10769,7 @@ export namespace Prisma {
   export type TeacherOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
+    email?: SortOrderInput | SortOrder
     department?: SortOrder
     _count?: TeacherCountOrderByAggregateInput
     _max?: TeacherMaxOrderByAggregateInput
@@ -10688,6 +10782,7 @@ export namespace Prisma {
     NOT?: TeacherScalarWhereWithAggregatesInput | TeacherScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Teacher"> | string
     userId?: StringWithAggregatesFilter<"Teacher"> | string
+    email?: StringNullableWithAggregatesFilter<"Teacher"> | string | null
     department?: StringWithAggregatesFilter<"Teacher"> | string
   }
 
@@ -10884,6 +10979,7 @@ export namespace Prisma {
   export type StudentInviteCreateInput = {
     id?: string
     fullName: string
+    email?: string | null
     department: string
     year: number
     rollNo: number
@@ -10895,6 +10991,7 @@ export namespace Prisma {
   export type StudentInviteUncheckedCreateInput = {
     id?: string
     fullName: string
+    email?: string | null
     department: string
     year: number
     rollNo: number
@@ -10906,6 +11003,7 @@ export namespace Prisma {
   export type StudentInviteUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     fullName?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     year?: IntFieldUpdateOperationsInput | number
     rollNo?: IntFieldUpdateOperationsInput | number
@@ -10917,6 +11015,7 @@ export namespace Prisma {
   export type StudentInviteUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     fullName?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     year?: IntFieldUpdateOperationsInput | number
     rollNo?: IntFieldUpdateOperationsInput | number
@@ -10928,6 +11027,7 @@ export namespace Prisma {
   export type StudentInviteCreateManyInput = {
     id?: string
     fullName: string
+    email?: string | null
     department: string
     year: number
     rollNo: number
@@ -10939,6 +11039,7 @@ export namespace Prisma {
   export type StudentInviteUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     fullName?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     year?: IntFieldUpdateOperationsInput | number
     rollNo?: IntFieldUpdateOperationsInput | number
@@ -10950,6 +11051,7 @@ export namespace Prisma {
   export type StudentInviteUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     fullName?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     year?: IntFieldUpdateOperationsInput | number
     rollNo?: IntFieldUpdateOperationsInput | number
@@ -11024,6 +11126,7 @@ export namespace Prisma {
   export type UserCreateInput = {
     id?: string
     clerkUserId: string
+    email?: string | null
     role: $Enums.Role
     createdAt?: Date | string
     student?: StudentCreateNestedOneWithoutUserInput
@@ -11033,6 +11136,7 @@ export namespace Prisma {
   export type UserUncheckedCreateInput = {
     id?: string
     clerkUserId: string
+    email?: string | null
     role: $Enums.Role
     createdAt?: Date | string
     student?: StudentUncheckedCreateNestedOneWithoutUserInput
@@ -11042,6 +11146,7 @@ export namespace Prisma {
   export type UserUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     clerkUserId?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentUpdateOneWithoutUserNestedInput
@@ -11051,6 +11156,7 @@ export namespace Prisma {
   export type UserUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     clerkUserId?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentUncheckedUpdateOneWithoutUserNestedInput
@@ -11060,6 +11166,7 @@ export namespace Prisma {
   export type UserCreateManyInput = {
     id?: string
     clerkUserId: string
+    email?: string | null
     role: $Enums.Role
     createdAt?: Date | string
   }
@@ -11067,6 +11174,7 @@ export namespace Prisma {
   export type UserUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     clerkUserId?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11074,12 +11182,15 @@ export namespace Prisma {
   export type UserUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     clerkUserId?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StudentCreateInput = {
     id?: string
+    fullName: string
+    email?: string | null
     department: string
     year: number
     rollNo: number
@@ -11091,7 +11202,9 @@ export namespace Prisma {
 
   export type StudentUncheckedCreateInput = {
     id?: string
+    fullName: string
     userId: string
+    email?: string | null
     department: string
     year: number
     rollNo: number
@@ -11102,6 +11215,8 @@ export namespace Prisma {
 
   export type StudentUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     year?: IntFieldUpdateOperationsInput | number
     rollNo?: IntFieldUpdateOperationsInput | number
@@ -11113,7 +11228,9 @@ export namespace Prisma {
 
   export type StudentUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     year?: IntFieldUpdateOperationsInput | number
     rollNo?: IntFieldUpdateOperationsInput | number
@@ -11124,7 +11241,9 @@ export namespace Prisma {
 
   export type StudentCreateManyInput = {
     id?: string
+    fullName: string
     userId: string
+    email?: string | null
     department: string
     year: number
     rollNo: number
@@ -11134,6 +11253,8 @@ export namespace Prisma {
 
   export type StudentUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     year?: IntFieldUpdateOperationsInput | number
     rollNo?: IntFieldUpdateOperationsInput | number
@@ -11143,7 +11264,9 @@ export namespace Prisma {
 
   export type StudentUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     year?: IntFieldUpdateOperationsInput | number
     rollNo?: IntFieldUpdateOperationsInput | number
@@ -11153,6 +11276,7 @@ export namespace Prisma {
 
   export type TeacherCreateInput = {
     id?: string
+    email?: string | null
     department: string
     user: UserCreateNestedOneWithoutTeacherInput
   }
@@ -11160,11 +11284,13 @@ export namespace Prisma {
   export type TeacherUncheckedCreateInput = {
     id?: string
     userId: string
+    email?: string | null
     department: string
   }
 
   export type TeacherUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneRequiredWithoutTeacherNestedInput
   }
@@ -11172,23 +11298,27 @@ export namespace Prisma {
   export type TeacherUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
   }
 
   export type TeacherCreateManyInput = {
     id?: string
     userId: string
+    email?: string | null
     department: string
   }
 
   export type TeacherUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
   }
 
   export type TeacherUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
   }
 
@@ -11405,6 +11535,21 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -11432,6 +11577,11 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
   export type StudentInviteDepartmentYearRollNoCompoundUniqueInput = {
     department: string
     year: number
@@ -11441,6 +11591,7 @@ export namespace Prisma {
   export type StudentInviteCountOrderByAggregateInput = {
     id?: SortOrder
     fullName?: SortOrder
+    email?: SortOrder
     department?: SortOrder
     year?: SortOrder
     rollNo?: SortOrder
@@ -11457,6 +11608,7 @@ export namespace Prisma {
   export type StudentInviteMaxOrderByAggregateInput = {
     id?: SortOrder
     fullName?: SortOrder
+    email?: SortOrder
     department?: SortOrder
     year?: SortOrder
     rollNo?: SortOrder
@@ -11468,6 +11620,7 @@ export namespace Prisma {
   export type StudentInviteMinOrderByAggregateInput = {
     id?: SortOrder
     fullName?: SortOrder
+    email?: SortOrder
     department?: SortOrder
     year?: SortOrder
     rollNo?: SortOrder
@@ -11497,6 +11650,24 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -11584,6 +11755,7 @@ export namespace Prisma {
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     clerkUserId?: SortOrder
+    email?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
   }
@@ -11591,6 +11763,7 @@ export namespace Prisma {
   export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
     clerkUserId?: SortOrder
+    email?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
   }
@@ -11598,6 +11771,7 @@ export namespace Prisma {
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
     clerkUserId?: SortOrder
+    email?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
   }
@@ -11635,7 +11809,9 @@ export namespace Prisma {
 
   export type StudentCountOrderByAggregateInput = {
     id?: SortOrder
+    fullName?: SortOrder
     userId?: SortOrder
+    email?: SortOrder
     department?: SortOrder
     year?: SortOrder
     rollNo?: SortOrder
@@ -11650,7 +11826,9 @@ export namespace Prisma {
 
   export type StudentMaxOrderByAggregateInput = {
     id?: SortOrder
+    fullName?: SortOrder
     userId?: SortOrder
+    email?: SortOrder
     department?: SortOrder
     year?: SortOrder
     rollNo?: SortOrder
@@ -11660,7 +11838,9 @@ export namespace Prisma {
 
   export type StudentMinOrderByAggregateInput = {
     id?: SortOrder
+    fullName?: SortOrder
     userId?: SortOrder
+    email?: SortOrder
     department?: SortOrder
     year?: SortOrder
     rollNo?: SortOrder
@@ -11676,18 +11856,21 @@ export namespace Prisma {
   export type TeacherCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    email?: SortOrder
     department?: SortOrder
   }
 
   export type TeacherMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    email?: SortOrder
     department?: SortOrder
   }
 
   export type TeacherMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    email?: SortOrder
     department?: SortOrder
   }
 
@@ -11702,21 +11885,6 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
   export type SessionScalarRelationFilter = {
     is?: SessionWhereInput
     isNot?: SessionWhereInput
@@ -11725,11 +11893,6 @@ export namespace Prisma {
   export type StudentScalarRelationFilter = {
     is?: StudentWhereInput
     isNot?: StudentWhereInput
-  }
-
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
   }
 
   export type AttendanceSessionIdStudentIdCompoundUniqueInput = {
@@ -11796,24 +11959,6 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
   export type SessionCountOrderByAggregateInput = {
     id?: SortOrder
     department?: SortOrder
@@ -11875,6 +12020,10 @@ export namespace Prisma {
 
   export type StringFieldUpdateOperationsInput = {
     set?: string
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -12051,10 +12200,6 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
-  }
-
   export type SessionUpdateOneRequiredWithoutAttendancesNestedInput = {
     create?: XOR<SessionCreateWithoutAttendancesInput, SessionUncheckedCreateWithoutAttendancesInput>
     connectOrCreate?: SessionCreateOrConnectWithoutAttendancesInput
@@ -12127,6 +12272,20 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -12169,6 +12328,34 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -12237,20 +12424,6 @@ export namespace Prisma {
     _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -12267,36 +12440,10 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type StudentCreateWithoutUserInput = {
     id?: string
+    fullName: string
+    email?: string | null
     department: string
     year: number
     rollNo: number
@@ -12307,6 +12454,8 @@ export namespace Prisma {
 
   export type StudentUncheckedCreateWithoutUserInput = {
     id?: string
+    fullName: string
+    email?: string | null
     department: string
     year: number
     rollNo: number
@@ -12322,11 +12471,13 @@ export namespace Prisma {
 
   export type TeacherCreateWithoutUserInput = {
     id?: string
+    email?: string | null
     department: string
   }
 
   export type TeacherUncheckedCreateWithoutUserInput = {
     id?: string
+    email?: string | null
     department: string
   }
 
@@ -12348,6 +12499,8 @@ export namespace Prisma {
 
   export type StudentUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     year?: IntFieldUpdateOperationsInput | number
     rollNo?: IntFieldUpdateOperationsInput | number
@@ -12358,6 +12511,8 @@ export namespace Prisma {
 
   export type StudentUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     year?: IntFieldUpdateOperationsInput | number
     rollNo?: IntFieldUpdateOperationsInput | number
@@ -12379,11 +12534,13 @@ export namespace Prisma {
 
   export type TeacherUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
   }
 
   export type TeacherUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
   }
 
@@ -12420,6 +12577,7 @@ export namespace Prisma {
   export type UserCreateWithoutStudentInput = {
     id?: string
     clerkUserId: string
+    email?: string | null
     role: $Enums.Role
     createdAt?: Date | string
     teacher?: TeacherCreateNestedOneWithoutUserInput
@@ -12428,6 +12586,7 @@ export namespace Prisma {
   export type UserUncheckedCreateWithoutStudentInput = {
     id?: string
     clerkUserId: string
+    email?: string | null
     role: $Enums.Role
     createdAt?: Date | string
     teacher?: TeacherUncheckedCreateNestedOneWithoutUserInput
@@ -12482,6 +12641,7 @@ export namespace Prisma {
   export type UserUpdateWithoutStudentInput = {
     id?: StringFieldUpdateOperationsInput | string
     clerkUserId?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teacher?: TeacherUpdateOneWithoutUserNestedInput
@@ -12490,6 +12650,7 @@ export namespace Prisma {
   export type UserUncheckedUpdateWithoutStudentInput = {
     id?: StringFieldUpdateOperationsInput | string
     clerkUserId?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teacher?: TeacherUncheckedUpdateOneWithoutUserNestedInput
@@ -12498,6 +12659,7 @@ export namespace Prisma {
   export type UserCreateWithoutTeacherInput = {
     id?: string
     clerkUserId: string
+    email?: string | null
     role: $Enums.Role
     createdAt?: Date | string
     student?: StudentCreateNestedOneWithoutUserInput
@@ -12506,6 +12668,7 @@ export namespace Prisma {
   export type UserUncheckedCreateWithoutTeacherInput = {
     id?: string
     clerkUserId: string
+    email?: string | null
     role: $Enums.Role
     createdAt?: Date | string
     student?: StudentUncheckedCreateNestedOneWithoutUserInput
@@ -12530,6 +12693,7 @@ export namespace Prisma {
   export type UserUpdateWithoutTeacherInput = {
     id?: StringFieldUpdateOperationsInput | string
     clerkUserId?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentUpdateOneWithoutUserNestedInput
@@ -12538,6 +12702,7 @@ export namespace Prisma {
   export type UserUncheckedUpdateWithoutTeacherInput = {
     id?: StringFieldUpdateOperationsInput | string
     clerkUserId?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentUncheckedUpdateOneWithoutUserNestedInput
@@ -12570,6 +12735,8 @@ export namespace Prisma {
 
   export type StudentCreateWithoutAttendancesInput = {
     id?: string
+    fullName: string
+    email?: string | null
     department: string
     year: number
     rollNo: number
@@ -12580,7 +12747,9 @@ export namespace Prisma {
 
   export type StudentUncheckedCreateWithoutAttendancesInput = {
     id?: string
+    fullName: string
     userId: string
+    email?: string | null
     department: string
     year: number
     rollNo: number
@@ -12637,6 +12806,8 @@ export namespace Prisma {
 
   export type StudentUpdateWithoutAttendancesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     year?: IntFieldUpdateOperationsInput | number
     rollNo?: IntFieldUpdateOperationsInput | number
@@ -12647,7 +12818,9 @@ export namespace Prisma {
 
   export type StudentUncheckedUpdateWithoutAttendancesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     year?: IntFieldUpdateOperationsInput | number
     rollNo?: IntFieldUpdateOperationsInput | number

@@ -123,6 +123,7 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 exports.Prisma.StudentInviteScalarFieldEnum = {
   id: 'id',
   fullName: 'fullName',
+  email: 'email',
   department: 'department',
   year: 'year',
   rollNo: 'rollNo',
@@ -143,13 +144,16 @@ exports.Prisma.TeacherInviteScalarFieldEnum = {
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   clerkUserId: 'clerkUserId',
+  email: 'email',
   role: 'role',
   createdAt: 'createdAt'
 };
 
 exports.Prisma.StudentScalarFieldEnum = {
   id: 'id',
+  fullName: 'fullName',
   userId: 'userId',
+  email: 'email',
   department: 'department',
   year: 'year',
   rollNo: 'rollNo',
@@ -160,6 +164,7 @@ exports.Prisma.StudentScalarFieldEnum = {
 exports.Prisma.TeacherScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  email: 'email',
   department: 'department'
 };
 

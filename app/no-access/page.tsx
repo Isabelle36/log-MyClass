@@ -1,25 +1,15 @@
-"use client"
-
-import { useClerk } from "@clerk/nextjs"
-import { useEffect } from "react"
-
 export default function NoAccessPage() {
-  const { signOut } = useClerk()
-
-  useEffect(() => {
-    // Immediately sign out the Clerk session so they can't navigate back
-    // into protected routes while still holding a valid Clerk token
-    signOut({ redirectUrl: "/sign-in" })
-  }, [signOut])
-
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 text-center">
-      <h1 className="text-2xl font-bold">Access Denied</h1>
-      <p className="text-muted-foreground max-w-sm">
-        Your account does not have access to this system. Contact your
-        institution administrator to receive an invite.
-      </p>
-      <p className="text-sm text-gray-400">Signing you out…</p>
+    <div className="flex min-h-screen items-center justify-center p-6">
+      <div className="max-w-lg text-center">
+        <h1 className="text-2xl font-semibold">Access restricted</h1>
+        <p className="mt-3 text-sm text-muted-foreground">
+          Your account is not assigned to this institution yet.
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Ask an admin to send you an invite.
+        </p>
+      </div>
     </div>
   )
 }
