@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
+model StudentInvite {
+  id         String   @id @default(uuid())
+  fullName   String
+  email      String?  @unique
+  department String
+  year       Int
+  rollNo     Int
+  token      String   @unique
+  isUsed     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@unique([department, year, rollNo])
+}
+
+model TeacherInvite {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  department String
+  token      String   @unique
+  isUsed     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model User {
+  id          String   @id @default(uuid())
+  clerkUserId String   @unique
+  email       String?
+  role        Role
+  createdAt   DateTime @default(now())
+
+  student Student?
+  teacher Teacher?
+}
+
+model Student {
+  id           String       @id @default(uuid())
+  fullName     String
+  userId       String       @unique
+  email        String?
+  department   String
+  year         Int
+  rollNo       Int
+  isActive     Boolean      @default(true)
+  academicYear String
+  attendances  Attendance[]
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([department, year, rollNo])
+}
+
+model Teacher {
+  id         String  @id @default(uuid())
+  userId     String  @unique
+  email      String?
+  department String
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Attendance {
+  id        String   @id @default(uuid())
+  sessionId String
+  studentId String
+  latitude  Float
+  longitude Float
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  session Session @relation(fields: [sessionId], references: [id])
+  student Student @relation(fields: [studentId], references: [id])
+
+  @@unique([sessionId, studentId])
+}
+
+model Session {
+  id         String   @id @default(uuid())
+  department String
+  year       Int
+  subject    String
+  createdBy  String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  attendances Attendance[]
+}
+
+model SuspiciousLog {
+  id        String   @id @default(uuid())
+  sessionId String
+  reason    String
+  createdAt DateTime @default(now())
+}
