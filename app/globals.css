@@ -1,12 +1,38 @@
 @import "tailwindcss";
+<<<<<<< HEAD
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+=======
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
+>>>>>>> 4e3eac2e6952d52de5eaa3b3b7d4ef86ae6ae188
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+<<<<<<< HEAD
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+=======
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --elegant-font: var(----elegant-font);
@@ -129,3 +155,4 @@
     @apply font-sans;
   }
 }
+>>>>>>> 4e3eac2e6952d52de5eaa3b3b7d4ef86ae6ae188
