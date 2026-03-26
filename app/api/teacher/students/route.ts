@@ -1,0 +1,66 @@
+import { prisma } from "@/lib/prisma"
+import { auth } from "@clerk/nextjs/server"
+import { NextResponse } from "next/server"
+
+export async function GET(req: Request) {
+  const { userId } = await auth()
+
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  const actor = await prisma.user.findUnique({
+    where: { clerkUserId: userId },
+    select: {
+      role: true,
+      teacher: {
+        select: {
+          department: true,
+        },
+      },
+    },
+  })
+
+  if (actor?.role !== "TEACHER" || !actor.teacher) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
+
+  const url = new URL(req.url)
+  const q = url.searchParams.get("q")?.trim() ?? ""
+  const yearRaw = url.searchParams.get("year")?.trim() ?? ""
+  const year = Number(yearRaw)
+
+  const students = await prisma.student.findMany({
+    where: {
+      department: actor.teacher.department,
+      ...(yearRaw && Number.isInteger(year) ? { year } : {}),
+      ...(q
+        ? {
+            OR: [
+              { fullName: { contains: q, mode: "insensitive" } },
+              { email: { contains: q, mode: "insensitive" } },
+              ...(Number.isInteger(Number(q)) ? [{ rollNo: Number(q) }] : []),
+            ],
+          }
+        : {}),
+    },
+    orderBy: [{ year: "asc" }, { rollNo: "asc" }],
+    take: 300,
+    select: {
+      id: true,
+      fullName: true,
+      email: true,
+      year: true,
+      rollNo: true,
+      isActive: true,
+      department: true,
+      academicYear: true,
+    },
+  })
+
+  return NextResponse.json({
+    count: students.length,
+    department: actor.teacher.department,
+    students,
+  })
+}

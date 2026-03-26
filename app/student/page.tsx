@@ -1,12 +1,12 @@
 import { requireRole } from "@/lib/auth"
+import { StudentDashboardClient } from "./StudentDashboardClient"
 
 export default async function StudentPage() {
-  const user = await requireRole("STUDENT")
+  await requireRole("STUDENT")
 
   return (
-    <div>
-      <h1>Student Dashboard</h1>
-      <p>Welcome, {user.role.toLowerCase()}.</p>
+    <div className="p-6 md:p-10">
+      <StudentDashboardClient />
     </div>
   )
 }

@@ -1,8 +1,8 @@
 import { requireRole } from "@/lib/auth"
 import CreateTeacher from "../Components/CreateTeacher"
-import CreateStudentInvite from "../Components/CreateStudentInvite"
-import UploadStudentsCsv from "../Components/UploadStudentsCsv"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import AdminStudentsManager from "./AdminStudentsManager"
+import AdminTeachersManager from "./AdminTeachersManager"
 
 export default async function AdminDashboard() {
   await requireRole("ADMIN")
@@ -11,11 +11,11 @@ export default async function AdminDashboard() {
     <div className="p-10 space-y-6">
       <h1 className="text-3xl font-bold">Admin Dashboard</h1>
       <p className="text-sm text-muted-foreground">
-        All onboarding runs with server-side role assignment. Teacher invites default to TEACHER and
-        student invites default to STUDENT.
+        Admin manages only teacher onboarding. Teachers are responsible for inviting and managing
+        students in their own department.
       </p>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Invite Teacher</CardTitle>
@@ -24,25 +24,25 @@ export default async function AdminDashboard() {
             <CreateTeacher />
           </CardContent>
         </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Invite Student</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CreateStudentInvite />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Upload Students CSV</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <UploadStudentsCsv />
-          </CardContent>
-        </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Teacher Management</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <AdminTeachersManager />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Student Lifecycle Management</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <AdminStudentsManager />
+        </CardContent>
+      </Card>
     </div>
   )
 }
