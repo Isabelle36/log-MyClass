@@ -5,7 +5,6 @@ import Features from "./Components/features";
 import HowItWorks from "./Components/how-it-works";
 import Footer from "./Components/footer";
 import FAQ from "./Components/faq";
-import Heroo from "./Components/Heroo"; 
 
 const page = async ({
   searchParams,
@@ -37,7 +36,6 @@ const page = async ({
       <Navbar />
       <main>
         <Hero />
-        <Heroo />
         <Features />
         <HowItWorks />
         <FAQ />

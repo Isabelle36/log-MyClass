@@ -8,6 +8,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 const HIDDEN_HEADER_PREFIXES = ["/sign-in", "/sign-up", "/teacher/invite", "/student/invite", "/no-access"]
+const HIDDEN_HEADER_EXACT = ["/"]
 
 export default function AuthHeaderClient() {
   const pathname = usePathname()
@@ -15,6 +16,10 @@ export default function AuthHeaderClient() {
   const hideHeader = HIDDEN_HEADER_PREFIXES.some((prefix) =>
     pathname.startsWith(prefix)
   )
+
+  if (HIDDEN_HEADER_EXACT.includes(pathname)) {
+    return null
+  }
 
   if (hideHeader) {
     return null

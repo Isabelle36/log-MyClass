@@ -66,11 +66,23 @@ export namespace $Enums {
 
 export type Role = (typeof Role)[keyof typeof Role]
 
+
+export const AttendanceStatus: {
+  PRESENT: 'PRESENT',
+  ABSENT: 'ABSENT'
+};
+
+export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]
+
 }
 
 export type Role = $Enums.Role
 
 export const Role: typeof $Enums.Role
+
+export type AttendanceStatus = $Enums.AttendanceStatus
+
+export const AttendanceStatus: typeof $Enums.AttendanceStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -2683,6 +2695,7 @@ export namespace Prisma {
   export type TeacherInviteMinAggregateOutputType = {
     id: string | null
     email: string | null
+    fullName: string | null
     department: string | null
     token: string | null
     isUsed: boolean | null
@@ -2692,6 +2705,7 @@ export namespace Prisma {
   export type TeacherInviteMaxAggregateOutputType = {
     id: string | null
     email: string | null
+    fullName: string | null
     department: string | null
     token: string | null
     isUsed: boolean | null
@@ -2701,6 +2715,7 @@ export namespace Prisma {
   export type TeacherInviteCountAggregateOutputType = {
     id: number
     email: number
+    fullName: number
     department: number
     token: number
     isUsed: number
@@ -2712,6 +2727,7 @@ export namespace Prisma {
   export type TeacherInviteMinAggregateInputType = {
     id?: true
     email?: true
+    fullName?: true
     department?: true
     token?: true
     isUsed?: true
@@ -2721,6 +2737,7 @@ export namespace Prisma {
   export type TeacherInviteMaxAggregateInputType = {
     id?: true
     email?: true
+    fullName?: true
     department?: true
     token?: true
     isUsed?: true
@@ -2730,6 +2747,7 @@ export namespace Prisma {
   export type TeacherInviteCountAggregateInputType = {
     id?: true
     email?: true
+    fullName?: true
     department?: true
     token?: true
     isUsed?: true
@@ -2812,6 +2830,7 @@ export namespace Prisma {
   export type TeacherInviteGroupByOutputType = {
     id: string
     email: string
+    fullName: string | null
     department: string
     token: string
     isUsed: boolean
@@ -2838,6 +2857,7 @@ export namespace Prisma {
   export type TeacherInviteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     email?: boolean
+    fullName?: boolean
     department?: boolean
     token?: boolean
     isUsed?: boolean
@@ -2847,6 +2867,7 @@ export namespace Prisma {
   export type TeacherInviteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     email?: boolean
+    fullName?: boolean
     department?: boolean
     token?: boolean
     isUsed?: boolean
@@ -2856,6 +2877,7 @@ export namespace Prisma {
   export type TeacherInviteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     email?: boolean
+    fullName?: boolean
     department?: boolean
     token?: boolean
     isUsed?: boolean
@@ -2865,13 +2887,14 @@ export namespace Prisma {
   export type TeacherInviteSelectScalar = {
     id?: boolean
     email?: boolean
+    fullName?: boolean
     department?: boolean
     token?: boolean
     isUsed?: boolean
     createdAt?: boolean
   }
 
-  export type TeacherInviteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "department" | "token" | "isUsed" | "createdAt", ExtArgs["result"]["teacherInvite"]>
+  export type TeacherInviteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "fullName" | "department" | "token" | "isUsed" | "createdAt", ExtArgs["result"]["teacherInvite"]>
 
   export type $TeacherInvitePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "TeacherInvite"
@@ -2879,6 +2902,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       email: string
+      fullName: string | null
       department: string
       token: string
       isUsed: boolean
@@ -3308,6 +3332,7 @@ export namespace Prisma {
   interface TeacherInviteFieldRefs {
     readonly id: FieldRef<"TeacherInvite", 'String'>
     readonly email: FieldRef<"TeacherInvite", 'String'>
+    readonly fullName: FieldRef<"TeacherInvite", 'String'>
     readonly department: FieldRef<"TeacherInvite", 'String'>
     readonly token: FieldRef<"TeacherInvite", 'String'>
     readonly isUsed: FieldRef<"TeacherInvite", 'Boolean'>
@@ -5955,6 +5980,7 @@ export namespace Prisma {
   export type TeacherMinAggregateOutputType = {
     id: string | null
     userId: string | null
+    fullName: string | null
     email: string | null
     department: string | null
   }
@@ -5962,6 +5988,7 @@ export namespace Prisma {
   export type TeacherMaxAggregateOutputType = {
     id: string | null
     userId: string | null
+    fullName: string | null
     email: string | null
     department: string | null
   }
@@ -5969,6 +5996,7 @@ export namespace Prisma {
   export type TeacherCountAggregateOutputType = {
     id: number
     userId: number
+    fullName: number
     email: number
     department: number
     _all: number
@@ -5978,6 +6006,7 @@ export namespace Prisma {
   export type TeacherMinAggregateInputType = {
     id?: true
     userId?: true
+    fullName?: true
     email?: true
     department?: true
   }
@@ -5985,6 +6014,7 @@ export namespace Prisma {
   export type TeacherMaxAggregateInputType = {
     id?: true
     userId?: true
+    fullName?: true
     email?: true
     department?: true
   }
@@ -5992,6 +6022,7 @@ export namespace Prisma {
   export type TeacherCountAggregateInputType = {
     id?: true
     userId?: true
+    fullName?: true
     email?: true
     department?: true
     _all?: true
@@ -6072,6 +6103,7 @@ export namespace Prisma {
   export type TeacherGroupByOutputType = {
     id: string
     userId: string
+    fullName: string
     email: string | null
     department: string
     _count: TeacherCountAggregateOutputType | null
@@ -6096,6 +6128,7 @@ export namespace Prisma {
   export type TeacherSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    fullName?: boolean
     email?: boolean
     department?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6104,6 +6137,7 @@ export namespace Prisma {
   export type TeacherSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    fullName?: boolean
     email?: boolean
     department?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6112,6 +6146,7 @@ export namespace Prisma {
   export type TeacherSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    fullName?: boolean
     email?: boolean
     department?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6120,11 +6155,12 @@ export namespace Prisma {
   export type TeacherSelectScalar = {
     id?: boolean
     userId?: boolean
+    fullName?: boolean
     email?: boolean
     department?: boolean
   }
 
-  export type TeacherOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "email" | "department", ExtArgs["result"]["teacher"]>
+  export type TeacherOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "fullName" | "email" | "department", ExtArgs["result"]["teacher"]>
   export type TeacherInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -6143,6 +6179,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
+      fullName: string
       email: string | null
       department: string
     }, ExtArgs["result"]["teacher"]>
@@ -6571,6 +6608,7 @@ export namespace Prisma {
   interface TeacherFieldRefs {
     readonly id: FieldRef<"Teacher", 'String'>
     readonly userId: FieldRef<"Teacher", 'String'>
+    readonly fullName: FieldRef<"Teacher", 'String'>
     readonly email: FieldRef<"Teacher", 'String'>
     readonly department: FieldRef<"Teacher", 'String'>
   }
@@ -7013,6 +7051,7 @@ export namespace Prisma {
     id: string | null
     sessionId: string | null
     studentId: string | null
+    status: $Enums.AttendanceStatus | null
     latitude: number | null
     longitude: number | null
     ipAddress: string | null
@@ -7024,6 +7063,7 @@ export namespace Prisma {
     id: string | null
     sessionId: string | null
     studentId: string | null
+    status: $Enums.AttendanceStatus | null
     latitude: number | null
     longitude: number | null
     ipAddress: string | null
@@ -7035,6 +7075,7 @@ export namespace Prisma {
     id: number
     sessionId: number
     studentId: number
+    status: number
     latitude: number
     longitude: number
     ipAddress: number
@@ -7058,6 +7099,7 @@ export namespace Prisma {
     id?: true
     sessionId?: true
     studentId?: true
+    status?: true
     latitude?: true
     longitude?: true
     ipAddress?: true
@@ -7069,6 +7111,7 @@ export namespace Prisma {
     id?: true
     sessionId?: true
     studentId?: true
+    status?: true
     latitude?: true
     longitude?: true
     ipAddress?: true
@@ -7080,6 +7123,7 @@ export namespace Prisma {
     id?: true
     sessionId?: true
     studentId?: true
+    status?: true
     latitude?: true
     longitude?: true
     ipAddress?: true
@@ -7178,6 +7222,7 @@ export namespace Prisma {
     id: string
     sessionId: string
     studentId: string
+    status: $Enums.AttendanceStatus
     latitude: number
     longitude: number
     ipAddress: string | null
@@ -7208,6 +7253,7 @@ export namespace Prisma {
     id?: boolean
     sessionId?: boolean
     studentId?: boolean
+    status?: boolean
     latitude?: boolean
     longitude?: boolean
     ipAddress?: boolean
@@ -7221,6 +7267,7 @@ export namespace Prisma {
     id?: boolean
     sessionId?: boolean
     studentId?: boolean
+    status?: boolean
     latitude?: boolean
     longitude?: boolean
     ipAddress?: boolean
@@ -7234,6 +7281,7 @@ export namespace Prisma {
     id?: boolean
     sessionId?: boolean
     studentId?: boolean
+    status?: boolean
     latitude?: boolean
     longitude?: boolean
     ipAddress?: boolean
@@ -7247,6 +7295,7 @@ export namespace Prisma {
     id?: boolean
     sessionId?: boolean
     studentId?: boolean
+    status?: boolean
     latitude?: boolean
     longitude?: boolean
     ipAddress?: boolean
@@ -7254,7 +7303,7 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type AttendanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "studentId" | "latitude" | "longitude" | "ipAddress" | "userAgent" | "createdAt", ExtArgs["result"]["attendance"]>
+  export type AttendanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "studentId" | "status" | "latitude" | "longitude" | "ipAddress" | "userAgent" | "createdAt", ExtArgs["result"]["attendance"]>
   export type AttendanceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     session?: boolean | SessionDefaultArgs<ExtArgs>
     student?: boolean | StudentDefaultArgs<ExtArgs>
@@ -7278,6 +7327,7 @@ export namespace Prisma {
       id: string
       sessionId: string
       studentId: string
+      status: $Enums.AttendanceStatus
       latitude: number
       longitude: number
       ipAddress: string | null
@@ -7711,6 +7761,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Attendance", 'String'>
     readonly sessionId: FieldRef<"Attendance", 'String'>
     readonly studentId: FieldRef<"Attendance", 'String'>
+    readonly status: FieldRef<"Attendance", 'AttendanceStatus'>
     readonly latitude: FieldRef<"Attendance", 'Float'>
     readonly longitude: FieldRef<"Attendance", 'Float'>
     readonly ipAddress: FieldRef<"Attendance", 'String'>
@@ -10274,6 +10325,7 @@ export namespace Prisma {
   export const TeacherInviteScalarFieldEnum: {
     id: 'id',
     email: 'email',
+    fullName: 'fullName',
     department: 'department',
     token: 'token',
     isUsed: 'isUsed',
@@ -10312,6 +10364,7 @@ export namespace Prisma {
   export const TeacherScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
+    fullName: 'fullName',
     email: 'email',
     department: 'department'
   };
@@ -10323,6 +10376,7 @@ export namespace Prisma {
     id: 'id',
     sessionId: 'sessionId',
     studentId: 'studentId',
+    status: 'status',
     latitude: 'latitude',
     longitude: 'longitude',
     ipAddress: 'ipAddress',
@@ -10449,6 +10503,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'AttendanceStatus'
+   */
+  export type EnumAttendanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttendanceStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'AttendanceStatus[]'
+   */
+  export type ListEnumAttendanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttendanceStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -10546,6 +10614,7 @@ export namespace Prisma {
     NOT?: TeacherInviteWhereInput | TeacherInviteWhereInput[]
     id?: StringFilter<"TeacherInvite"> | string
     email?: StringFilter<"TeacherInvite"> | string
+    fullName?: StringNullableFilter<"TeacherInvite"> | string | null
     department?: StringFilter<"TeacherInvite"> | string
     token?: StringFilter<"TeacherInvite"> | string
     isUsed?: BoolFilter<"TeacherInvite"> | boolean
@@ -10555,6 +10624,7 @@ export namespace Prisma {
   export type TeacherInviteOrderByWithRelationInput = {
     id?: SortOrder
     email?: SortOrder
+    fullName?: SortOrderInput | SortOrder
     department?: SortOrder
     token?: SortOrder
     isUsed?: SortOrder
@@ -10568,6 +10638,7 @@ export namespace Prisma {
     AND?: TeacherInviteWhereInput | TeacherInviteWhereInput[]
     OR?: TeacherInviteWhereInput[]
     NOT?: TeacherInviteWhereInput | TeacherInviteWhereInput[]
+    fullName?: StringNullableFilter<"TeacherInvite"> | string | null
     department?: StringFilter<"TeacherInvite"> | string
     isUsed?: BoolFilter<"TeacherInvite"> | boolean
     createdAt?: DateTimeFilter<"TeacherInvite"> | Date | string
@@ -10576,6 +10647,7 @@ export namespace Prisma {
   export type TeacherInviteOrderByWithAggregationInput = {
     id?: SortOrder
     email?: SortOrder
+    fullName?: SortOrderInput | SortOrder
     department?: SortOrder
     token?: SortOrder
     isUsed?: SortOrder
@@ -10591,6 +10663,7 @@ export namespace Prisma {
     NOT?: TeacherInviteScalarWhereWithAggregatesInput | TeacherInviteScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"TeacherInvite"> | string
     email?: StringWithAggregatesFilter<"TeacherInvite"> | string
+    fullName?: StringNullableWithAggregatesFilter<"TeacherInvite"> | string | null
     department?: StringWithAggregatesFilter<"TeacherInvite"> | string
     token?: StringWithAggregatesFilter<"TeacherInvite"> | string
     isUsed?: BoolWithAggregatesFilter<"TeacherInvite"> | boolean
@@ -10742,6 +10815,7 @@ export namespace Prisma {
     NOT?: TeacherWhereInput | TeacherWhereInput[]
     id?: StringFilter<"Teacher"> | string
     userId?: StringFilter<"Teacher"> | string
+    fullName?: StringFilter<"Teacher"> | string
     email?: StringNullableFilter<"Teacher"> | string | null
     department?: StringFilter<"Teacher"> | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -10750,6 +10824,7 @@ export namespace Prisma {
   export type TeacherOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
+    fullName?: SortOrder
     email?: SortOrderInput | SortOrder
     department?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -10761,6 +10836,7 @@ export namespace Prisma {
     AND?: TeacherWhereInput | TeacherWhereInput[]
     OR?: TeacherWhereInput[]
     NOT?: TeacherWhereInput | TeacherWhereInput[]
+    fullName?: StringFilter<"Teacher"> | string
     email?: StringNullableFilter<"Teacher"> | string | null
     department?: StringFilter<"Teacher"> | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -10769,6 +10845,7 @@ export namespace Prisma {
   export type TeacherOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
+    fullName?: SortOrder
     email?: SortOrderInput | SortOrder
     department?: SortOrder
     _count?: TeacherCountOrderByAggregateInput
@@ -10782,6 +10859,7 @@ export namespace Prisma {
     NOT?: TeacherScalarWhereWithAggregatesInput | TeacherScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Teacher"> | string
     userId?: StringWithAggregatesFilter<"Teacher"> | string
+    fullName?: StringWithAggregatesFilter<"Teacher"> | string
     email?: StringNullableWithAggregatesFilter<"Teacher"> | string | null
     department?: StringWithAggregatesFilter<"Teacher"> | string
   }
@@ -10793,6 +10871,7 @@ export namespace Prisma {
     id?: StringFilter<"Attendance"> | string
     sessionId?: StringFilter<"Attendance"> | string
     studentId?: StringFilter<"Attendance"> | string
+    status?: EnumAttendanceStatusFilter<"Attendance"> | $Enums.AttendanceStatus
     latitude?: FloatFilter<"Attendance"> | number
     longitude?: FloatFilter<"Attendance"> | number
     ipAddress?: StringNullableFilter<"Attendance"> | string | null
@@ -10806,6 +10885,7 @@ export namespace Prisma {
     id?: SortOrder
     sessionId?: SortOrder
     studentId?: SortOrder
+    status?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
     ipAddress?: SortOrderInput | SortOrder
@@ -10823,6 +10903,7 @@ export namespace Prisma {
     NOT?: AttendanceWhereInput | AttendanceWhereInput[]
     sessionId?: StringFilter<"Attendance"> | string
     studentId?: StringFilter<"Attendance"> | string
+    status?: EnumAttendanceStatusFilter<"Attendance"> | $Enums.AttendanceStatus
     latitude?: FloatFilter<"Attendance"> | number
     longitude?: FloatFilter<"Attendance"> | number
     ipAddress?: StringNullableFilter<"Attendance"> | string | null
@@ -10836,6 +10917,7 @@ export namespace Prisma {
     id?: SortOrder
     sessionId?: SortOrder
     studentId?: SortOrder
+    status?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
     ipAddress?: SortOrderInput | SortOrder
@@ -10855,6 +10937,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Attendance"> | string
     sessionId?: StringWithAggregatesFilter<"Attendance"> | string
     studentId?: StringWithAggregatesFilter<"Attendance"> | string
+    status?: EnumAttendanceStatusWithAggregatesFilter<"Attendance"> | $Enums.AttendanceStatus
     latitude?: FloatWithAggregatesFilter<"Attendance"> | number
     longitude?: FloatWithAggregatesFilter<"Attendance"> | number
     ipAddress?: StringNullableWithAggregatesFilter<"Attendance"> | string | null
@@ -11063,6 +11146,7 @@ export namespace Prisma {
   export type TeacherInviteCreateInput = {
     id?: string
     email: string
+    fullName?: string | null
     department: string
     token: string
     isUsed?: boolean
@@ -11072,6 +11156,7 @@ export namespace Prisma {
   export type TeacherInviteUncheckedCreateInput = {
     id?: string
     email: string
+    fullName?: string | null
     department: string
     token: string
     isUsed?: boolean
@@ -11081,6 +11166,7 @@ export namespace Prisma {
   export type TeacherInviteUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    fullName?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     isUsed?: BoolFieldUpdateOperationsInput | boolean
@@ -11090,6 +11176,7 @@ export namespace Prisma {
   export type TeacherInviteUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    fullName?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     isUsed?: BoolFieldUpdateOperationsInput | boolean
@@ -11099,6 +11186,7 @@ export namespace Prisma {
   export type TeacherInviteCreateManyInput = {
     id?: string
     email: string
+    fullName?: string | null
     department: string
     token: string
     isUsed?: boolean
@@ -11108,6 +11196,7 @@ export namespace Prisma {
   export type TeacherInviteUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    fullName?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     isUsed?: BoolFieldUpdateOperationsInput | boolean
@@ -11117,6 +11206,7 @@ export namespace Prisma {
   export type TeacherInviteUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    fullName?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     isUsed?: BoolFieldUpdateOperationsInput | boolean
@@ -11276,6 +11366,7 @@ export namespace Prisma {
 
   export type TeacherCreateInput = {
     id?: string
+    fullName: string
     email?: string | null
     department: string
     user: UserCreateNestedOneWithoutTeacherInput
@@ -11284,12 +11375,14 @@ export namespace Prisma {
   export type TeacherUncheckedCreateInput = {
     id?: string
     userId: string
+    fullName: string
     email?: string | null
     department: string
   }
 
   export type TeacherUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneRequiredWithoutTeacherNestedInput
@@ -11298,6 +11391,7 @@ export namespace Prisma {
   export type TeacherUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
   }
@@ -11305,12 +11399,14 @@ export namespace Prisma {
   export type TeacherCreateManyInput = {
     id?: string
     userId: string
+    fullName: string
     email?: string | null
     department: string
   }
 
   export type TeacherUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
   }
@@ -11318,12 +11414,14 @@ export namespace Prisma {
   export type TeacherUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
   }
 
   export type AttendanceCreateInput = {
     id?: string
+    status?: $Enums.AttendanceStatus
     latitude: number
     longitude: number
     ipAddress?: string | null
@@ -11337,6 +11435,7 @@ export namespace Prisma {
     id?: string
     sessionId: string
     studentId: string
+    status?: $Enums.AttendanceStatus
     latitude: number
     longitude: number
     ipAddress?: string | null
@@ -11346,6 +11445,7 @@ export namespace Prisma {
 
   export type AttendanceUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
     latitude?: FloatFieldUpdateOperationsInput | number
     longitude?: FloatFieldUpdateOperationsInput | number
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
@@ -11359,6 +11459,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     sessionId?: StringFieldUpdateOperationsInput | string
     studentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
     latitude?: FloatFieldUpdateOperationsInput | number
     longitude?: FloatFieldUpdateOperationsInput | number
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
@@ -11370,6 +11471,7 @@ export namespace Prisma {
     id?: string
     sessionId: string
     studentId: string
+    status?: $Enums.AttendanceStatus
     latitude: number
     longitude: number
     ipAddress?: string | null
@@ -11379,6 +11481,7 @@ export namespace Prisma {
 
   export type AttendanceUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
     latitude?: FloatFieldUpdateOperationsInput | number
     longitude?: FloatFieldUpdateOperationsInput | number
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
@@ -11390,6 +11493,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     sessionId?: StringFieldUpdateOperationsInput | string
     studentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
     latitude?: FloatFieldUpdateOperationsInput | number
     longitude?: FloatFieldUpdateOperationsInput | number
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
@@ -11711,6 +11815,7 @@ export namespace Prisma {
   export type TeacherInviteCountOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
+    fullName?: SortOrder
     department?: SortOrder
     token?: SortOrder
     isUsed?: SortOrder
@@ -11720,6 +11825,7 @@ export namespace Prisma {
   export type TeacherInviteMaxOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
+    fullName?: SortOrder
     department?: SortOrder
     token?: SortOrder
     isUsed?: SortOrder
@@ -11729,6 +11835,7 @@ export namespace Prisma {
   export type TeacherInviteMinOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
+    fullName?: SortOrder
     department?: SortOrder
     token?: SortOrder
     isUsed?: SortOrder
@@ -11856,6 +11963,7 @@ export namespace Prisma {
   export type TeacherCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    fullName?: SortOrder
     email?: SortOrder
     department?: SortOrder
   }
@@ -11863,6 +11971,7 @@ export namespace Prisma {
   export type TeacherMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    fullName?: SortOrder
     email?: SortOrder
     department?: SortOrder
   }
@@ -11870,8 +11979,16 @@ export namespace Prisma {
   export type TeacherMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    fullName?: SortOrder
     email?: SortOrder
     department?: SortOrder
+  }
+
+  export type EnumAttendanceStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceStatus | EnumAttendanceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttendanceStatusFilter<$PrismaModel> | $Enums.AttendanceStatus
   }
 
   export type FloatFilter<$PrismaModel = never> = {
@@ -11904,6 +12021,7 @@ export namespace Prisma {
     id?: SortOrder
     sessionId?: SortOrder
     studentId?: SortOrder
+    status?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
     ipAddress?: SortOrder
@@ -11920,6 +12038,7 @@ export namespace Prisma {
     id?: SortOrder
     sessionId?: SortOrder
     studentId?: SortOrder
+    status?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
     ipAddress?: SortOrder
@@ -11931,6 +12050,7 @@ export namespace Prisma {
     id?: SortOrder
     sessionId?: SortOrder
     studentId?: SortOrder
+    status?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
     ipAddress?: SortOrder
@@ -11941,6 +12061,16 @@ export namespace Prisma {
   export type AttendanceSumOrderByAggregateInput = {
     latitude?: SortOrder
     longitude?: SortOrder
+  }
+
+  export type EnumAttendanceStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceStatus | EnumAttendanceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttendanceStatusWithAggregatesFilter<$PrismaModel> | $Enums.AttendanceStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAttendanceStatusFilter<$PrismaModel>
+    _max?: NestedEnumAttendanceStatusFilter<$PrismaModel>
   }
 
   export type FloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -12192,6 +12322,10 @@ export namespace Prisma {
     connect?: StudentWhereUniqueInput
   }
 
+  export type EnumAttendanceStatusFieldUpdateOperationsInput = {
+    set?: $Enums.AttendanceStatus
+  }
+
   export type FloatFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -12424,6 +12558,23 @@ export namespace Prisma {
     _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
+  export type NestedEnumAttendanceStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceStatus | EnumAttendanceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttendanceStatusFilter<$PrismaModel> | $Enums.AttendanceStatus
+  }
+
+  export type NestedEnumAttendanceStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceStatus | EnumAttendanceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttendanceStatusWithAggregatesFilter<$PrismaModel> | $Enums.AttendanceStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAttendanceStatusFilter<$PrismaModel>
+    _max?: NestedEnumAttendanceStatusFilter<$PrismaModel>
+  }
+
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -12471,12 +12622,14 @@ export namespace Prisma {
 
   export type TeacherCreateWithoutUserInput = {
     id?: string
+    fullName: string
     email?: string | null
     department: string
   }
 
   export type TeacherUncheckedCreateWithoutUserInput = {
     id?: string
+    fullName: string
     email?: string | null
     department: string
   }
@@ -12534,18 +12687,21 @@ export namespace Prisma {
 
   export type TeacherUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
   }
 
   export type TeacherUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     department?: StringFieldUpdateOperationsInput | string
   }
 
   export type AttendanceCreateWithoutStudentInput = {
     id?: string
+    status?: $Enums.AttendanceStatus
     latitude: number
     longitude: number
     ipAddress?: string | null
@@ -12557,6 +12713,7 @@ export namespace Prisma {
   export type AttendanceUncheckedCreateWithoutStudentInput = {
     id?: string
     sessionId: string
+    status?: $Enums.AttendanceStatus
     latitude: number
     longitude: number
     ipAddress?: string | null
@@ -12620,6 +12777,7 @@ export namespace Prisma {
     id?: StringFilter<"Attendance"> | string
     sessionId?: StringFilter<"Attendance"> | string
     studentId?: StringFilter<"Attendance"> | string
+    status?: EnumAttendanceStatusFilter<"Attendance"> | $Enums.AttendanceStatus
     latitude?: FloatFilter<"Attendance"> | number
     longitude?: FloatFilter<"Attendance"> | number
     ipAddress?: StringNullableFilter<"Attendance"> | string | null
@@ -12830,6 +12988,7 @@ export namespace Prisma {
 
   export type AttendanceCreateWithoutSessionInput = {
     id?: string
+    status?: $Enums.AttendanceStatus
     latitude: number
     longitude: number
     ipAddress?: string | null
@@ -12841,6 +13000,7 @@ export namespace Prisma {
   export type AttendanceUncheckedCreateWithoutSessionInput = {
     id?: string
     studentId: string
+    status?: $Enums.AttendanceStatus
     latitude: number
     longitude: number
     ipAddress?: string | null
@@ -12877,6 +13037,7 @@ export namespace Prisma {
   export type AttendanceCreateManyStudentInput = {
     id?: string
     sessionId: string
+    status?: $Enums.AttendanceStatus
     latitude: number
     longitude: number
     ipAddress?: string | null
@@ -12886,6 +13047,7 @@ export namespace Prisma {
 
   export type AttendanceUpdateWithoutStudentInput = {
     id?: StringFieldUpdateOperationsInput | string
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
     latitude?: FloatFieldUpdateOperationsInput | number
     longitude?: FloatFieldUpdateOperationsInput | number
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12897,6 +13059,7 @@ export namespace Prisma {
   export type AttendanceUncheckedUpdateWithoutStudentInput = {
     id?: StringFieldUpdateOperationsInput | string
     sessionId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
     latitude?: FloatFieldUpdateOperationsInput | number
     longitude?: FloatFieldUpdateOperationsInput | number
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12907,6 +13070,7 @@ export namespace Prisma {
   export type AttendanceUncheckedUpdateManyWithoutStudentInput = {
     id?: StringFieldUpdateOperationsInput | string
     sessionId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
     latitude?: FloatFieldUpdateOperationsInput | number
     longitude?: FloatFieldUpdateOperationsInput | number
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12917,6 +13081,7 @@ export namespace Prisma {
   export type AttendanceCreateManySessionInput = {
     id?: string
     studentId: string
+    status?: $Enums.AttendanceStatus
     latitude: number
     longitude: number
     ipAddress?: string | null
@@ -12926,6 +13091,7 @@ export namespace Prisma {
 
   export type AttendanceUpdateWithoutSessionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
     latitude?: FloatFieldUpdateOperationsInput | number
     longitude?: FloatFieldUpdateOperationsInput | number
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12937,6 +13103,7 @@ export namespace Prisma {
   export type AttendanceUncheckedUpdateWithoutSessionInput = {
     id?: StringFieldUpdateOperationsInput | string
     studentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
     latitude?: FloatFieldUpdateOperationsInput | number
     longitude?: FloatFieldUpdateOperationsInput | number
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12947,6 +13114,7 @@ export namespace Prisma {
   export type AttendanceUncheckedUpdateManyWithoutSessionInput = {
     id?: StringFieldUpdateOperationsInput | string
     studentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
     latitude?: FloatFieldUpdateOperationsInput | number
     longitude?: FloatFieldUpdateOperationsInput | number
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null

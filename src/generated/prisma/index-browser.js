@@ -135,6 +135,7 @@ exports.Prisma.StudentInviteScalarFieldEnum = {
 exports.Prisma.TeacherInviteScalarFieldEnum = {
   id: 'id',
   email: 'email',
+  fullName: 'fullName',
   department: 'department',
   token: 'token',
   isUsed: 'isUsed',
@@ -164,6 +165,7 @@ exports.Prisma.StudentScalarFieldEnum = {
 exports.Prisma.TeacherScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  fullName: 'fullName',
   email: 'email',
   department: 'department'
 };
@@ -172,6 +174,7 @@ exports.Prisma.AttendanceScalarFieldEnum = {
   id: 'id',
   sessionId: 'sessionId',
   studentId: 'studentId',
+  status: 'status',
   latitude: 'latitude',
   longitude: 'longitude',
   ipAddress: 'ipAddress',
@@ -214,6 +217,11 @@ exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
   TEACHER: 'TEACHER',
   STUDENT: 'STUDENT'
+};
+
+exports.AttendanceStatus = exports.$Enums.AttendanceStatus = {
+  PRESENT: 'PRESENT',
+  ABSENT: 'ABSENT'
 };
 
 exports.Prisma.ModelName = {

@@ -14,6 +14,11 @@ enum Role {
   STUDENT
 }
 
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+}
+
 model StudentInvite {
   id          String   @id @default(uuid())
   fullName    String
@@ -31,6 +36,7 @@ model StudentInvite {
 model TeacherInvite {
   id          String   @id @default(uuid())
   email       String   @unique
+  fullName    String?
   department  String
   token       String   @unique
   isUsed      Boolean  @default(false)
@@ -68,6 +74,7 @@ model Student {
 model Teacher {
   id         String   @id @default(uuid())
   userId     String   @unique
+  fullName   String   @db.VarChar(80)
   email      String?
   department String
 
@@ -78,6 +85,7 @@ model Attendance {
   id         String   @id @default(uuid())
   sessionId  String
   studentId  String
+  status     AttendanceStatus @default(PRESENT)
   latitude   Float
   longitude  Float
   ipAddress  String?

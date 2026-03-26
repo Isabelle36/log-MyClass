@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Figtree } from "next/font/google";
+import { Geist, Geist_Mono, Figtree, Lora } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs'
 import ErrorBoundary from "./Components/ErrorBoundary";
 import AuthHeader from "./Components/AuthHeader";
@@ -7,7 +7,14 @@ import "./globals.css";
 import { cn } from "../lib/utils";
 
 
+import { Toaster } from "@/components/ui/sonner";
+
 const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
+const lora = Lora({
+  subsets: ["latin"],
+  variable: "--font-lora",
+  weight: ["400", "500", "600", "700"],
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +37,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", figtree.variable)}>
+    <html lang="en" className={cn("font-sans", figtree.variable, lora.variable)}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ClerkProvider
           signInUrl="/sign-in"
@@ -41,6 +48,7 @@ export default async function RootLayout({
           <ErrorBoundary>
             <AuthHeader />
             {children}
+            <Toaster />
           </ErrorBoundary>
         </ClerkProvider>
       </body>
