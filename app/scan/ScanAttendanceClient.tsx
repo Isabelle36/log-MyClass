@@ -1,22 +1,19 @@
 "use client"
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
-
-type MarkStatus = "idle" | "loading" | "success" | "error"
+import { toast } from "sonner"
 
 export default function ScanAttendanceClient({ sessionId }: { sessionId: string }) {
   const router = useRouter()
-  const [status, setStatus] = useState<MarkStatus>("idle")
-  const [message, setMessage] = useState("")
+  const [loading, setLoading] = useState(false)
   const [isRestricted, setIsRestricted] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const autoAttemptedRef = useRef(false)
 
   const markAttendance = async () => {
-    setStatus("loading")
-    setMessage("")
+    setLoading(true)
 
     const payload: { sessionId: string; latitude?: number; longitude?: number } = { sessionId }
 
@@ -29,7 +26,11 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
             resolve()
           },
           () => resolve(),
-          { timeout: 5000 }
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0,
+          }
         )
       })
     }
@@ -45,18 +46,47 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
       message?: string
       error?: string
       errorCode?: string
+      distanceMeters?: number
     }
 
     if (!res.ok) {
-      setStatus("error")
+      setLoading(false)
       setIsRestricted(data.errorCode === "ACCOUNT_RESTRICTED")
-      setMessage(data.error ?? "Could not mark attendance")
+
+      if (data.errorCode === "ACCOUNT_RESTRICTED") {
+        const msg = "Your account is restricted. Please contact your dean to reactivate it."
+        setErrorMessage(msg)
+        toast.error(msg)
+        return
+      }
+
+      if (data.errorCode === "LOCATION_REQUIRED") {
+        const msg =
+          "Turn on location services and allow this browser to access your location, then try again from the classroom."
+        setErrorMessage(msg)
+        toast.error(msg)
+        return
+      }
+
+      if (data.errorCode === "GEOFENCE_VIOLATION") {
+        const distanceText =
+          typeof data.distanceMeters === "number" ? `You seem to be about ${data.distanceMeters}m away. ` : ""
+        const msg =
+          `${distanceText}You must be inside the classroom to mark attendance. Please move closer and try again.`
+        setErrorMessage(msg)
+        toast.error(msg)
+        return
+      }
+
+      const generic = data.error ?? "Could not mark attendance"
+      setErrorMessage(generic)
+      toast.error(generic)
       return
     }
 
     setIsRestricted(false)
-    setStatus("success")
-    setMessage(data.message ?? "Attendance marked")
+    setErrorMessage(null)
+    toast.success(data.message ?? "Attendance marked")
 
     setTimeout(() => {
       router.push("/student")
@@ -81,36 +111,17 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
       <h1 className="text-2xl font-semibold">Scan Attendance</h1>
       <p className="text-sm text-muted-foreground break-all">Session: {sessionId}</p>
 
-      {status === "loading" ? <p className="text-sm">Marking attendance...</p> : null}
-      {status === "success" ? (
-        <div className="space-y-4">
-          <p className="text-sm text-green-600">{message}</p>
-          <p className="text-xs text-muted-foreground">Redirecting to dashboard...</p>
-        </div>
-      ) : null}
-      {status === "error" ? (
-        <div className="space-y-2">
-          <Alert variant="destructive" className="border-red-300 bg-red-50 text-red-900">
-            <AlertTitle>Could Not Mark Attendance</AlertTitle>
-            <AlertDescription>
-              <p>{message}</p>
-            </AlertDescription>
-          </Alert>
-          {isRestricted ? (
-            <p className="text-xs text-red-700">
-              Contact your dean to reactivate your account. Once reactivated, you can mark
-              attendance again.
-            </p>
-          ) : null}
-        </div>
+      {loading ? <p className="text-sm">Marking attendance...</p> : null}
+      {errorMessage && !loading ? (
+        <p className="text-xs text-red-700">{errorMessage}</p>
       ) : null}
 
       <Button
         type="button"
         onClick={markAttendance}
-        disabled={status === "loading" || status === "success" || isRestricted}
+        disabled={loading || isRestricted}
       >
-        {status === "success" ? "✅ Marked" : status === "loading" ? "Please wait..." : "Mark Attendance"}
+        {loading ? "Please wait..." : "Mark Attendance"}
       </Button>
     </div>
   )

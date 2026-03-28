@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
+import { toast } from "sonner"
 
 type InviteStatus = "idle" | "loading" | "success" | "error"
 
@@ -40,21 +41,18 @@ export default function CreateStudentInvite() {
       const data = raw ? (JSON.parse(raw) as { error?: string; email?: string }) : {}
 
       if (!res.ok) {
-        setStatus("error")
-        setMessage(data.error ?? `Failed to create student invite (HTTP ${res.status})`)
+        toast.error(data.error ?? "Failed to create student invite")
         return
       }
 
-      setStatus("success")
-      setMessage(`Invite sent to ${data.email ?? email}`)
+      toast.success(`Invite sent to ${data.email ?? email}`)
       setFullName("")
       setEmail("")
       setDepartment("")
       setYear("")
       setRollNo("")
     } catch {
-      setStatus("error")
-      setMessage("Unexpected server response. Please try again.")
+      toast.error("Unexpected server response. Please try again.")
     }
   }
 
@@ -103,8 +101,7 @@ export default function CreateStudentInvite() {
         {status === "loading" ? "Creating..." : "Create Student Invite"}
       </Button>
 
-      {status === "success" && <p className="text-sm text-green-600">{message}</p>}
-      {status === "error" && <p className="text-sm text-red-600">{message}</p>}
+
     </div>
   )
 }

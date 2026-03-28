@@ -13,8 +13,11 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Edit02Icon } from "@hugeicons/core-free-icons"
 import { toast } from "sonner"
 import { useEffect, useMemo, useRef, useState } from "react"
+import { X } from "lucide-react"
 
 type StudentRow = {
   id: string
@@ -29,7 +32,7 @@ type StudentRow = {
 
 type AttendanceLog = {
   id: string
-  status: "PRESENT" | "ABSENT"
+  status: "PRESENT" | "ABSENT" | "EXCUSED"
   createdAt: string
   student: {
     id: string
@@ -75,6 +78,7 @@ export default function AdminStudentsManager() {
   const [students, setStudents] = useState<StudentRow[]>([])
   const [logs, setLogs] = useState<AttendanceLog[]>([])
   const [selectedStudentId, setSelectedStudentId] = useState("")
+  const [logStatusFilter, setLogStatusFilter] = useState<"all" | "ABSENT" | "PRESENT" | "EXCUSED">("all")
 
   const [q, setQ] = useState("")
   const [department, setDepartment] = useState("all")
@@ -100,6 +104,16 @@ export default function AdminStudentsManager() {
 
   const studentsRequestRef = useRef(0)
   const logsRequestRef = useRef(0)
+
+  const [excuseFromDate, setExcuseFromDate] = useState("")
+  const [excuseToDate, setExcuseToDate] = useState("")
+
+  const [editOpen, setEditOpen] = useState(false)
+  const [editLog, setEditLog] = useState<AttendanceLog | null>(null)
+  const [editStatus, setEditStatus] = useState<"PRESENT" | "EXCUSED">("PRESENT")
+  const [editLoading, setEditLoading] = useState(false)
+
+  const canEditAttendance = (editLog?.status ?? "").toUpperCase() === "ABSENT"
 
   const deletePhrase = deleteTarget
     ? `DELETE ${deleteTarget.fullName} (${deleteTarget.rollNo})`
@@ -157,44 +171,39 @@ export default function AdminStudentsManager() {
     }
   }
 
-  const fetchLogs = async (filters?: LogFilters) => {
-    const requestId = ++logsRequestRef.current
-    setLogsLoading(true)
+  const fetchLogs = async (studentId?: string) => {
+  const requestId = ++logsRequestRef.current
+  setLogsLoading(true)
 
-    try {
-      const url = new URL("/api/admin/students/attendance", window.location.origin)
-      const chosenStudentId = filters?.studentId ?? selectedStudentId
-      if (chosenStudentId) {
-        url.searchParams.set("studentId", chosenStudentId)
-      }
+  try {
+    const url = new URL("/api/admin/students/attendance", window.location.origin)
+    if (studentId) {
+      url.searchParams.set("studentId", studentId)
+    }
 
-      const res = await fetch(url.toString())
-      const data = (await res.json()) as {
-        logs?: AttendanceLog[]
-        error?: string
-      }
+    const res = await fetch(url.toString())
+    const data = (await res.json()) as {
+      logs?: AttendanceLog[]
+      error?: string
+    }
 
-      if (!res.ok) {
-        if (requestId === logsRequestRef.current) {
-          setLogs([])
-        }
-        return
-      }
+    if (requestId !== logsRequestRef.current) return
 
-      if (requestId === logsRequestRef.current) {
-        setLogs(data.logs ?? [])
-      }
-    } catch {
-      if (requestId === logsRequestRef.current) {
-        setLogs([])
-      }
-    } finally {
-      if (requestId === logsRequestRef.current) {
-        setLogsLoading(false)
-        setHasLoadedLogs(true)
-      }
+    if (!res.ok) {
+      setLogs([])
+      return
+    }
+
+    setLogs(data.logs ?? [])
+  } catch {
+    if (requestId === logsRequestRef.current) setLogs([])
+  } finally {
+    if (requestId === logsRequestRef.current) {
+      setLogsLoading(false)
+      setHasLoadedLogs(true)
     }
   }
+}
 
   const updateStudent = async (studentId: string, nextActive: boolean) => {
     setActionLoading(true)
@@ -314,6 +323,19 @@ export default function AdminStudentsManager() {
     [students]
   )
 
+  const filteredLogs = useMemo(() => {
+    if (logStatusFilter === "all") {
+      return logs
+    }
+
+    return logs.filter((log) => String(log.status ?? "").toUpperCase() === logStatusFilter)
+  }, [logs, logStatusFilter])
+
+  const absentLogsCount = useMemo(
+    () => logs.filter((log) => String(log.status ?? "").toUpperCase() === "ABSENT").length,
+    [logs]
+  )
+
   useEffect(() => {
     const timer = window.setTimeout(() => {
       void fetchStudents({ q, department, year, isActive })
@@ -324,9 +346,12 @@ export default function AdminStudentsManager() {
     }
   }, [q, department, year, isActive])
 
-  useEffect(() => {
-    void fetchLogs({ studentId: selectedStudentId || undefined })
-  }, [selectedStudentId])
+ 
+
+  // Update logs when student selection changes
+ useEffect(() => {
+  void fetchLogs(selectedStudentId || undefined)
+}, [selectedStudentId])
 
   const formatDate = (value: string) => {
     const dt = new Date(value)
@@ -462,6 +487,69 @@ export default function AdminStudentsManager() {
 
         <CardContent>
           <div className="min-h-80 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+            <div className="flex flex-wrap items-end gap-2 border-b border-slate-200 bg-slate-50/80 px-4 py-3">
+              <div className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-slate-600">
+                  {selectedStudentId ? `Excuse absences for ${students.find(s => s.id === selectedStudentId)?.fullName}` : "Bulk excuse available for selected student"}
+                </span>
+                <div className="flex flex-wrap gap-2 text-xs text-slate-600">
+                  <input
+                    type="date"
+                    value={excuseFromDate}
+                    onChange={(event) => setExcuseFromDate(event.target.value)}
+                    className="h-7 rounded-md border border-slate-300 px-2 text-xs"
+                    disabled={!selectedStudentId}
+                  />
+                  <input
+                    type="date"
+                    value={excuseToDate}
+                    onChange={(event) => setExcuseToDate(event.target.value)}
+                    className="h-7 rounded-md border border-slate-300 px-2 text-xs"
+                    disabled={!selectedStudentId}
+                  />
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={bulkLoading || !selectedStudentId || !excuseFromDate || !excuseToDate}
+                    onClick={async () => {
+                      if (!selectedStudentId || !excuseFromDate || !excuseToDate) {
+                        return
+                      }
+
+                      setBulkLoading(true)
+                      try {
+                        const res = await fetch("/api/admin/students/attendance/bulk-excuse", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            studentId: selectedStudentId,
+                            fromDate: excuseFromDate,
+                            toDate: excuseToDate,
+                          }),
+                        })
+
+                        const data = (await res.json()) as { error?: string; updatedCount?: number }
+                        if (!res.ok) {
+                          toast.error(data.error ?? "Failed to update attendance records")
+                          return
+                        }
+
+                        toast.success(`Marked ${data.updatedCount ?? 0} classes as excused`)
+                        await fetchLogs(selectedStudentId)
+                      } catch {
+                        toast.error("Failed to update attendance records")
+                      } finally {
+                        setBulkLoading(false)
+                      }
+                    }}
+                  >
+                    Excuse range
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             <Table>
             <TableHeader>
               <TableRow className="bg-slate-50/80">
@@ -566,14 +654,33 @@ export default function AdminStudentsManager() {
       <Card>
         <CardHeader>
           <CardTitle>Attendance Logs</CardTitle>
+          <p className="mt-1 text-xs text-slate-500">
+            Legend: <span className="font-semibold text-emerald-600">Present</span>,
+            <span className="ml-1 font-semibold text-rose-600">Absent</span>,
+            <span className="ml-1 font-semibold text-amber-600">Excused</span>
+          </p>
         </CardHeader>
         <CardContent>
           <div className="mb-3 flex min-h-7 flex-wrap items-center gap-2">
             <p className="text-xs text-muted-foreground">
               {selectedStudentId
-                ? "Showing logs for selected student (latest first)."
-                : "Showing all students attendance logs (latest first)."}
+                ? `Showing logs for selected student (${students.find(s => s.id === selectedStudentId)?.fullName}) (latest first).`
+                : "Showing all students' full attendance history including absent (latest first)."}
             </p>
+            <p className="text-xs text-slate-500">
+              Total: {logs.length} • Absent: {absentLogsCount}
+            </p>
+            <select
+              value={logStatusFilter}
+              onChange={(event) => setLogStatusFilter(event.target.value as "all" | "ABSENT" | "PRESENT" | "EXCUSED")}
+              className="h-7 rounded-md border border-slate-300 bg-white px-2 text-xs text-slate-700"
+              aria-label="Filter logs by status"
+            >
+              <option value="all">All Status</option>
+              <option value="ABSENT">Absent</option>
+              <option value="PRESENT">Present</option>
+              <option value="EXCUSED">Excused</option>
+            </select>
             {selectedStudentId ? (
               <Button
                 type="button"
@@ -587,7 +694,8 @@ export default function AdminStudentsManager() {
             ) : null}
           </div>
 
-          <div className="min-h-80 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+            <div className="h-[30rem] overflow-y-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -600,6 +708,7 @@ export default function AdminStudentsManager() {
                   <TableHead>Teacher</TableHead>
                   <TableHead>Subject</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Edit</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -635,14 +744,17 @@ export default function AdminStudentsManager() {
                       </TableCell>
                     </TableRow>
                   ))
-                ) : logs.length === 0 ? (
+                ) : filteredLogs.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={9} className="py-8 text-center text-muted-foreground">
-                      No logs found.
+                    <TableCell colSpan={10} className="py-8 text-center text-muted-foreground">
+                      {logs.length === 0 ? "No logs found." : "No logs found for selected status filter."}
                     </TableCell>
                   </TableRow>
                 ) : (
-                  logs.map((log) => (
+                  filteredLogs.map((log) => {
+                    const normalizedStatus = String(log.status ?? "").toUpperCase()
+
+                    return (
                     <TableRow key={log.id}>
                       <TableCell>{formatDate(log.createdAt)}</TableCell>
                       <TableCell>{formatTime(log.createdAt)}</TableCell>
@@ -653,17 +765,48 @@ export default function AdminStudentsManager() {
                       <TableCell>{log.session.teacherName}</TableCell>
                       <TableCell>{log.session.subject}</TableCell>
                       <TableCell>
-                        {log.status === "PRESENT" ? (
-                          <span className="text-emerald-600">Present</span>
+                        {normalizedStatus === "PRESENT" ? (
+                          <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
+                            Present
+                          </span>
+                        ) : normalizedStatus === "EXCUSED" ? (
+                          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
+                            Excused
+                          </span>
                         ) : (
-                          <span className="text-rose-600">Absent</span>
+                          <span className="rounded-full bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-700">
+                            Absent
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap text-right">
+                        {normalizedStatus === "ABSENT" ? (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            disabled={editLoading}
+                            onClick={() => {
+                              setEditLog(log)
+                              setEditStatus("PRESENT")
+                              setEditOpen(true)
+                            }}
+                            className="h-8 w-8 text-slate-500 hover:text-slate-900"
+                            aria-label="Edit attendance"
+                          >
+                            <HugeiconsIcon icon={Edit02Icon} strokeWidth={2} className="h-4 w-4" />
+                          </Button>
+                        ) : (
+                          <span className="text-xs text-slate-400">-</span>
                         )}
                       </TableCell>
                     </TableRow>
-                  ))
+                    )
+                  })
                 )}
               </TableBody>
             </Table>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -672,6 +815,14 @@ export default function AdminStudentsManager() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Promote Batch</DialogTitle>
+            <button
+              type="button"
+              onClick={() => setPromoteOpen(false)}
+              className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+            </button>
             <DialogDescription>
               Admin-only action. Promote one batch to the next year in one click.
             </DialogDescription>
@@ -735,6 +886,14 @@ export default function AdminStudentsManager() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-red-700">Danger Zone: Delete Student</DialogTitle>
+            <button
+              type="button"
+              onClick={() => setDeleteOpen(false)}
+              className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+            </button>
             <DialogDescription>
               This permanently removes the student and their attendance logs.
             </DialogDescription>
@@ -766,6 +925,111 @@ export default function AdminStudentsManager() {
               disabled={deletePhraseInput.trim() !== deletePhrase || actionLoading}
             >
               Confirm Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Attendance</DialogTitle>
+            <DialogDescription>
+              Only absent attendance can be edited. You can change it to
+              <span className="font-semibold"> Present</span> or
+              <span className="font-semibold"> Excused</span>.
+            </DialogDescription>
+          </DialogHeader>
+
+          {editLog && (
+            <div className="space-y-3 text-sm text-slate-700">
+              <div className="rounded-md bg-slate-50 px-3 py-2">
+                <p className="font-medium">{editLog.student.fullName} (Roll {editLog.student.rollNo})</p>
+                <p className="text-xs text-slate-500">
+                  {editLog.session.subject} • {formatDate(editLog.createdAt)} at {formatTime(editLog.createdAt)}
+                </p>
+              </div>
+
+              {canEditAttendance ? (
+                <div>
+                  <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Set status to
+                  </p>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={editStatus === "PRESENT" ? "default" : "outline"}
+                      onClick={() => setEditStatus("PRESENT")}
+                    >
+                      Present
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={editStatus === "EXCUSED" ? "default" : "outline"}
+                      onClick={() => setEditStatus("EXCUSED")}
+                    >
+                      Excused
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <p className="rounded-md border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+                  This record is already {editLog.status.toLowerCase()}. Editing is allowed only for absent records.
+                </p>
+              )}
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setEditOpen(false)
+                setEditLog(null)
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              disabled={editLoading || !editLog || !canEditAttendance}
+              onClick={async () => {
+                if (!editLog) return
+                if (editLog.status.toUpperCase() !== "ABSENT") {
+                  toast.error("Only absent records can be changed")
+                  return
+                }
+
+                setEditLoading(true)
+                try {
+                  const res = await fetch(`/api/admin/students/attendance/${editLog.id}`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ status: editStatus }),
+                  })
+
+                  const data = (await res.json()) as { error?: string }
+                  if (!res.ok) {
+                    toast.error(data.error ?? "Failed to update attendance")
+                    return
+                  }
+
+                  toast.success(
+                    editStatus === "PRESENT" ? "Marked as present" : "Marked as excused"
+                  )
+                  await fetchLogs(selectedStudentId)
+                  setEditOpen(false)
+                  setEditLog(null)
+                } catch {
+                  toast.error("Failed to update attendance")
+                } finally {
+                  setEditLoading(false)
+                }
+              }}
+            >
+              {editLoading ? "Saving..." : "Confirm change"}
             </Button>
           </DialogFooter>
         </DialogContent>

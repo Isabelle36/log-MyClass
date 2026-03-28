@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
+import { toast } from "sonner"
 
 export default function CreateTeacher() {
   const [fullName, setFullName] = useState("")
@@ -25,13 +26,11 @@ export default function CreateTeacher() {
     const data = await res.json()
 
     if (!res.ok) {
-      setStatus("error")
-      setMessage(data.error ?? "Failed to send invite")
+      toast.error(data.error ?? "Failed to create teacher invite")
       return
     }
 
-    setStatus("success")
-    setMessage(`Invite sent to ${data.email} for ${data.fullName}`)
+    toast.success(`Invite sent to ${data.email} for ${data.fullName}`)
     setFullName("")
     setEmail("")
     setDepartment("")
@@ -64,13 +63,7 @@ export default function CreateTeacher() {
         {status === "loading" ? "Sending..." : "Send Invite"}
       </Button>
 
-      {status === "success" && (
-        <p className="text-green-600 text-sm">{message}</p>
-      )}
 
-      {status === "error" && (
-        <p className="text-red-600 text-sm">{message}</p>
-      )}
     </div>
   )
 }

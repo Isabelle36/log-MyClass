@@ -5,6 +5,7 @@ import { getSubjectsForDepartmentYear } from "@/lib/curriculum"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useEffect, useMemo, useState } from "react"
+import { toast } from "sonner"
 
 type SessionData = {
   id: string
@@ -50,7 +51,6 @@ export default function AttendanceSessionPanel() {
   const [year, setYear] = useState("1")
   const [durationSeconds, setDurationSeconds] = useState("60")
   const [creating, setCreating] = useState(false)
-  const [error, setError] = useState("")
 
   const [session, setSession] = useState<SessionData | null>(null)
   const [scanUrl, setScanUrl] = useState("")
@@ -82,7 +82,7 @@ export default function AttendanceSessionPanel() {
     const data = (await res.json()) as SummaryResponse
 
     if (!res.ok) {
-      setError(data.error ?? "Failed to load attendance summary")
+      toast.error(data.error ?? "Failed to load attendance summary")
       return
     }
 
@@ -98,7 +98,6 @@ export default function AttendanceSessionPanel() {
     }
 
     setCreating(true)
-    setError("")
 
     const res = await fetch("/api/teacher/attendance/session", {
       method: "POST",
@@ -115,7 +114,7 @@ export default function AttendanceSessionPanel() {
 
     if (!res.ok || !data.session || !data.scanUrl) {
       setCreating(false)
-      setError(data.error ?? "Failed to create session")
+      toast.error(data.error ?? "Failed to create session")
       return
     }
 
@@ -225,8 +224,6 @@ export default function AttendanceSessionPanel() {
           {creating ? "Starting..." : "Start"}
         </Button>
       </div>
-
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
       {session ? (
         <div className="space-y-4 rounded-2xl border p-4">

@@ -6,7 +6,7 @@ const attendanceModel = prisma.attendance as any
 
 type AttendanceRow = {
   id: string
-  status: "PRESENT" | "ABSENT"
+  status: "PRESENT" | "ABSENT" | "EXCUSED"
   createdAt: Date
   sessionId: string
   session: {
@@ -131,8 +131,11 @@ export async function GET() {
 
   const totalSessions = eligibleSessions.length
   const totalAttended = typedAttendances.filter((attendance) => attendance.status === "PRESENT").length
-  const attendancePercentage = calculatePercentage(totalAttended, totalSessions)
-  const neededForOverall75 = classesNeededFor75(totalAttended, totalSessions)
+  const totalExcused = typedAttendances.filter((attendance) => attendance.status === "EXCUSED").length
+  const effectiveTotalSessions = Math.max(0, totalSessions - totalExcused)
+
+  const attendancePercentage = calculatePercentage(totalAttended, effectiveTotalSessions)
+  const neededForOverall75 = classesNeededFor75(totalAttended, effectiveTotalSessions)
 
   const attendanceBySessionId = new Map<string, AttendanceRow>(
     typedAttendances.map((attendance) => [attendance.sessionId, attendance])
@@ -141,11 +144,17 @@ export async function GET() {
   const history = eligibleSessions.slice(0, 40).map((session) => {
     const attendance = attendanceBySessionId.get(session.id)
 
+    const status = attendance?.status === "PRESENT"
+      ? "PRESENT"
+      : attendance?.status === "EXCUSED"
+        ? "EXCUSED"
+        : "ABSENT"
+
     return {
       sessionId: session.id,
       subject: session.subject,
       date: session.createdAt,
-      status: attendance?.status === "PRESENT" ? "PRESENT" : "ABSENT",
+      status,
       markedAt: attendance?.createdAt ?? null,
     }
   })
@@ -159,11 +168,11 @@ export async function GET() {
       status: entry.status === "PRESENT" ? "PRESENT" : "NOT_MARKED",
     }))
 
-  const subjectStats = new Map<string, { present: number; total: number }>()
+  const subjectStats = new Map<string, { present: number; total: number; excused: number }>()
 
   eligibleSessions.forEach((session) => {
     if (!subjectStats.has(session.subject)) {
-      subjectStats.set(session.subject, { present: 0, total: 0 })
+      subjectStats.set(session.subject, { present: 0, total: 0, excused: 0 })
     }
     const stat = subjectStats.get(session.subject)
     if (stat) {
@@ -173,15 +182,19 @@ export async function GET() {
 
   typedAttendances.forEach((attendance) => {
     const stat = subjectStats.get(attendance.session.subject)
-    if (stat && attendance.status === "PRESENT") {
+    if (!stat) return
+    if (attendance.status === "PRESENT") {
       stat.present += 1
+    } else if (attendance.status === "EXCUSED") {
+      stat.excused += 1
     }
   })
 
   const subjects = Array.from(subjectStats.entries())
     .map(([subject, stat]) => {
-      const percentage = calculatePercentage(stat.present, stat.total)
-      const neededToRecover = classesNeededFor75(stat.present, stat.total)
+      const effectiveTotal = Math.max(0, stat.total - stat.excused)
+      const percentage = calculatePercentage(stat.present, effectiveTotal)
+      const neededToRecover = classesNeededFor75(stat.present, effectiveTotal)
 
       return {
         subject,
@@ -196,9 +209,9 @@ export async function GET() {
 
   const atRiskSubjects = subjects.filter((subject) => subject.percentage < 75)
 
-  const attendNextFour = projectedPercentage(totalAttended, totalSessions, 4, 0)
-  const attendToRecover = projectedPercentage(totalAttended, totalSessions, neededForOverall75, 0)
-  const missNextTwo = projectedPercentage(totalAttended, totalSessions, 0, 2)
+  const attendNextFour = projectedPercentage(totalAttended, effectiveTotalSessions, 4, 0)
+  const attendToRecover = projectedPercentage(totalAttended, effectiveTotalSessions, neededForOverall75, 0)
+  const missNextTwo = projectedPercentage(totalAttended, effectiveTotalSessions, 0, 2)
 
   const actionPlan =
     neededForOverall75 > 0
@@ -210,10 +223,12 @@ export async function GET() {
     summary: {
       attendancePercentage,
       totalAttended,
-      totalSessions,
+      totalSessions: effectiveTotalSessions,
       status: getStatus(attendancePercentage),
       actionPlan,
       neededForOverall75,
+      totalScheduledSessions: totalSessions,
+      totalExcused,
     },
     warning: {
       atRiskCount: atRiskSubjects.length,

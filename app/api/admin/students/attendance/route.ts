@@ -57,56 +57,9 @@ export async function GET(req: Request) {
   const yearRaw = url.searchParams.get("year")?.trim() ?? ""
 
   const year = Number(yearRaw)
-
-  const logs = await attendanceModel.findMany({
-    where: {
-      ...(studentId ? { studentId } : {}),
-      ...(department || yearRaw
-        ? {
-            student: {
-              ...(department ? { department: { equals: department, mode: "insensitive" } } : {}),
-              ...(yearRaw && Number.isInteger(year) ? { year } : {}),
-            },
-          }
-        : {}),
-    },
-    orderBy: { createdAt: "desc" },
-    take: 500,
-    select: {
-      id: true,
-      status: true,
-      createdAt: true,
-      latitude: true,
-      longitude: true,
-      ipAddress: true,
-      userAgent: true,
-      student: {
-        select: {
-          id: true,
-          fullName: true,
-          email: true,
-          department: true,
-          year: true,
-          rollNo: true,
-        },
-      },
-      session: {
-        select: {
-          id: true,
-          subject: true,
-          department: true,
-          year: true,
-          createdBy: true,
-          createdAt: true,
-          expiresAt: true,
-        },
-      },
-    },
-  })
-
-  const typedLogs = logs as Array<{
+  let typedLogs: Array<{
     id: string
-    status: "PRESENT" | "ABSENT"
+    status: "PRESENT" | "ABSENT" | "EXCUSED"
     createdAt: Date
     session: {
       id: string
@@ -126,6 +79,224 @@ export async function GET(req: Request) {
       rollNo: number
     }
   }>
+
+  if (studentId) {
+    // For a specific student, build a full history similar to the
+    // student dashboard: every scheduled class for their
+    // department/year, marked as PRESENT / EXCUSED / ABSENT.
+
+    const student = await prisma.student.findUnique({
+      where: { id: studentId },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        department: true,
+        year: true,
+        rollNo: true,
+        user: {
+          select: {
+            createdAt: true,
+          },
+        },
+      },
+    })
+
+    if (!student) {
+      return NextResponse.json({ error: "Student not found" }, { status: 404 })
+    }
+
+    const effectiveFrom = student.user?.createdAt ?? new Date(0)
+    const now = new Date()
+
+    const sessions = await prisma.session.findMany({
+      where: {
+        department: student.department,
+        year: student.year,
+        createdAt: { gte: effectiveFrom, lte: now },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 2000,
+      select: {
+        id: true,
+        subject: true,
+        department: true,
+        year: true,
+        createdBy: true,
+        createdAt: true,
+        expiresAt: true,
+      },
+    })
+
+    if (sessions.length === 0) {
+      return NextResponse.json({ count: 0, logs: [] })
+    }
+
+    const sessionIds = sessions.map((session) => session.id)
+
+    const attendances = await attendanceModel.findMany({
+      where: {
+        studentId,
+        sessionId: { in: sessionIds },
+      },
+      select: {
+        id: true,
+        status: true,
+        createdAt: true,
+        sessionId: true,
+      },
+    })
+
+    const attendanceBySessionId = new Map<
+      string,
+      { id: string; status: "PRESENT" | "ABSENT" | "EXCUSED"; createdAt: Date; sessionId: string }
+    >()
+
+    for (const row of attendances as Array<{
+      id: string
+      status: "PRESENT" | "ABSENT" | "EXCUSED"
+      createdAt: Date
+      sessionId: string
+    }>) {
+      attendanceBySessionId.set(row.sessionId, row)
+    }
+
+    const studentInfo = {
+      id: student.id,
+      fullName: student.fullName,
+      email: student.email,
+      department: student.department,
+      year: student.year,
+      rollNo: student.rollNo,
+    }
+
+    typedLogs = sessions.map((session) => {
+      const attendance = attendanceBySessionId.get(session.id)
+
+      const status: "PRESENT" | "ABSENT" | "EXCUSED" =
+        attendance?.status === "PRESENT"
+          ? "PRESENT"
+          : attendance?.status === "EXCUSED"
+            ? "EXCUSED"
+            : "ABSENT"
+
+      return {
+        id: attendance?.id ?? `${session.id}:${student.id}`,
+        status,
+        createdAt: session.createdAt,
+        session,
+        student: studentInfo,
+      }
+    })
+  } else {
+    // For all students: build full history like per-student view
+    const now = new Date()
+    const effectiveFrom = new Date(0) // Adjust if needed, e.g., academic year start
+
+    let whereClause: any = {
+      createdAt: { gte: effectiveFrom, lte: now },
+    }
+
+    if (department) {
+      whereClause.department = { equals: department, mode: "insensitive" }
+    }
+    if (yearRaw && !Number.isNaN(year)) {
+      whereClause.year = year
+    }
+
+    const sessions = await prisma.session.findMany({
+      where: whereClause,
+      orderBy: { createdAt: "desc" },
+      take: 2000,
+      select: {
+        id: true,
+        subject: true,
+        department: true,
+        year: true,
+        createdBy: true,
+        createdAt: true,
+        expiresAt: true,
+      },
+    })
+
+    if (sessions.length === 0) {
+      return NextResponse.json({ count: 0, logs: [] })
+    }
+
+    // Get unique students relevant to these sessions' dept/year combos
+    const sessionDeptsYears = [...new Set(sessions.map(s => `${s.department}-${s.year}`))]
+    const relevantStudents = await prisma.student.findMany({
+      where: {
+        OR: sessionDeptsYears.map(dy => {
+          const [dept, y] = dy.split('-')
+          return { department: { equals: dept, mode: "insensitive" }, year: Number(y) }
+        }),
+        isActive: true, // Optional: only active students
+      },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        department: true,
+        year: true,
+        rollNo: true,
+      },
+    })
+
+    const sessionIds = sessions.map((session) => session.id)
+
+    // Fetch existing attendances for these sessions
+    const attendances = await attendanceModel.findMany({
+      where: {
+        sessionId: { in: sessionIds },
+      },
+      select: {
+        id: true,
+        status: true,
+        createdAt: true,
+        sessionId: true,
+        studentId: true,
+      },
+    })
+
+    const attendanceBySessionStudent = new Map<string, { id: string; status: "PRESENT" | "ABSENT" | "EXCUSED"; createdAt: Date; sessionId: string; studentId: string }>()
+    for (const row of attendances as any[]) {
+      const key = `${row.sessionId}:${row.studentId}`
+      attendanceBySessionStudent.set(key, row)
+    }
+
+    // Generate full logs
+    const allCombos: Array<{
+      session: typeof sessions[0]
+      student: typeof relevantStudents[0]
+    }> = []
+
+    for (const session of sessions) {
+      for (const student of relevantStudents.filter(s => s.department.toUpperCase() === session.department.toUpperCase() && s.year === session.year)) {
+        allCombos.push({ session, student })
+      }
+    }
+
+    typedLogs = allCombos.map(({ session, student }) => {
+      const key = `${session.id}:${student.id}`
+      const attendance = attendanceBySessionStudent.get(key)
+
+      const status: "PRESENT" | "ABSENT" | "EXCUSED" =
+        attendance?.status === "PRESENT"
+          ? "PRESENT"
+          : attendance?.status === "EXCUSED"
+            ? "EXCUSED"
+            : "ABSENT"
+
+      return {
+        id: attendance?.id ?? `${session.id}:${student.id}`,
+        status,
+        createdAt: session.createdAt,
+        session,
+        student,
+      }
+    })
+  }
 
   const creatorIds = Array.from(new Set(typedLogs.map((log) => log.session.createdBy))) as string[]
   const creators =
