@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
+import { toast } from "sonner"
 
 type UploadStatus = "idle" | "loading" | "success" | "error"
 
@@ -24,13 +25,11 @@ export default function UploadStudentsFileTeacher() {
     if (!file) return
 
     if (!isSupportedSpreadsheetFile(file)) {
-      setStatus("error")
-      setMessage("Only .csv, .xlsx, and .xls files are allowed")
+      toast.error("Only .csv, .xlsx, and .xls files are allowed")
       return
     }
 
     setStatus("loading")
-    setMessage("")
 
     const formData = new FormData()
     formData.append("file", file)
@@ -50,19 +49,26 @@ export default function UploadStudentsFileTeacher() {
       }
 
       if (!res.ok) {
-        setStatus("error")
-        setMessage(data.error ?? "File upload failed")
+        toast.error(data.error ?? "File upload failed")
+        setStatus("idle")
         return
       }
 
+      const created = data.created ?? 0
+      const updated = data.updated ?? 0
+      const failed = data.failed ?? 0
+      
+      if (failed > 0) {
+        toast.warning(`Successfully added ${created + updated} students. ${failed} rows failed to process.`)
+      } else {
+        toast.success(`All ${data.total ?? 0} students have been successfully imported!`)
+      }
+      
       setStatus("success")
-      setMessage(
-        `Processed ${data.total ?? 0}. Created ${data.created ?? 0}, updated ${data.updated ?? 0}, failed ${data.failed ?? 0}.`
-      )
       setFile(null)
     } catch {
-      setStatus("error")
-      setMessage("Something went wrong while uploading the file")
+      toast.error("Something went wrong while uploading the file")
+      setStatus("idle")
     }
   }
 
@@ -87,8 +93,7 @@ export default function UploadStudentsFileTeacher() {
         {status === "loading" ? "Uploading..." : "Upload Students File"}
       </Button>
 
-      {status === "success" && <p className="text-sm text-green-600">{message}</p>}
-      {status === "error" && <p className="text-sm text-red-600">{message}</p>}
+
     </div>
   )
 }

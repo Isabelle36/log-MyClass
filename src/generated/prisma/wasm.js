@@ -221,7 +221,8 @@ exports.Role = exports.$Enums.Role = {
 
 exports.AttendanceStatus = exports.$Enums.AttendanceStatus = {
   PRESENT: 'PRESENT',
-  ABSENT: 'ABSENT'
+  ABSENT: 'ABSENT',
+  EXCUSED: 'EXCUSED'
 };
 
 exports.Prisma.ModelName = {

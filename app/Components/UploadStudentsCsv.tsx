@@ -3,43 +3,43 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
-
-type UploadStatus = "idle" | "loading" | "success" | "error"
+import { toast } from "sonner"
 
 export default function UploadStudentsCsv() {
   const [file, setFile] = useState<File | null>(null)
-  const [status, setStatus] = useState<UploadStatus>("idle")
-  const [message, setMessage] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   async function uploadCsv() {
     if (!file) {
       return
     }
 
-    setStatus("loading")
-    setMessage("")
+    setIsLoading(true)
 
-    const formData = new FormData()
-    formData.append("file", file)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
 
-    const res = await fetch("/api/admin/students-upload", {
-      method: "POST",
-      body: formData,
-    })
+      const res = await fetch("/api/admin/students-upload", {
+        method: "POST",
+        body: formData,
+      })
 
-    const data = await res.json()
+      const data = await res.json()
 
-    if (!res.ok) {
-      setStatus("error")
-      setMessage(data.error ?? "CSV upload failed")
-      return
+      if (!res.ok) {
+        toast.error(data.error ?? "CSV upload failed")
+        setIsLoading(false)
+        return
+      }
+
+      toast.success(`All ${data.total} students have been successfully imported!`)
+      setFile(null)
+      setIsLoading(false)
+    } catch {
+      toast.error("Something went wrong while uploading the file")
+      setIsLoading(false)
     }
-
-    setStatus("success")
-    setMessage(
-      `Processed ${data.total}. Created ${data.created}, updated ${data.updated}, failed ${data.failed}.`
-    )
-    setFile(null)
   }
 
   return (
@@ -48,18 +48,15 @@ export default function UploadStudentsCsv() {
         type="file"
         accept=".csv,text/csv"
         onChange={(event) => setFile(event.target.files?.[0] ?? null)}
-        disabled={status === "loading"}
+        disabled={isLoading}
       />
       <p className="text-xs text-muted-foreground">
         CSV columns: fullName, email, department, year, rollNo
       </p>
 
-      <Button type="button" onClick={uploadCsv} disabled={status === "loading" || !file}>
-        {status === "loading" ? "Uploading..." : "Upload Students CSV"}
+      <Button type="button" onClick={uploadCsv} disabled={isLoading || !file}>
+        {isLoading ? "Uploading..." : "Upload Students CSV"}
       </Button>
-
-      {status === "success" && <p className="text-sm text-green-600">{message}</p>}
-      {status === "error" && <p className="text-sm text-red-600">{message}</p>}
     </div>
   )
 }

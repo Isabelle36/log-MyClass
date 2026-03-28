@@ -17,6 +17,7 @@ enum Role {
 enum AttendanceStatus {
   PRESENT
   ABSENT
+  EXCUSED
 }
 
 model StudentInvite {

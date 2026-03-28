@@ -69,7 +69,8 @@ export type Role = (typeof Role)[keyof typeof Role]
 
 export const AttendanceStatus: {
   PRESENT: 'PRESENT',
-  ABSENT: 'ABSENT'
+  ABSENT: 'ABSENT',
+  EXCUSED: 'EXCUSED'
 };
 
 export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]

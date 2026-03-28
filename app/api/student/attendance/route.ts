@@ -4,6 +4,36 @@ import { NextResponse } from "next/server"
 
 const attendanceModel = prisma.attendance as any
 
+// Campus geo-fence configuration.
+// Set these in your env, e.g.:
+// CAMPUS_LATITUDE=12.9716
+// CAMPUS_LONGITUDE=77.5946
+// GEOFENCE_RADIUS_METERS=40
+const CAMPUS_LATITUDE = Number(process.env.CAMPUS_LATITUDE ?? "0")
+const CAMPUS_LONGITUDE = Number(process.env.CAMPUS_LONGITUDE ?? "0")
+const GEOFENCE_RADIUS_METERS = Number(process.env.GEOFENCE_RADIUS_METERS ?? "150")
+
+function toRadians(value: number) {
+  return (value * Math.PI) / 180
+}
+
+function distanceInMeters(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371_000 // metres
+  const φ1 = toRadians(lat1)
+  const φ2 = toRadians(lat2)
+  const Δφ = toRadians(lat2 - lat1)
+  const Δλ = toRadians(lon2 - lon1)
+
+  const a =
+    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) *
+      Math.sin(Δλ / 2) * Math.sin(Δλ / 2)
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+  return R * c
+}
+
 export async function POST(req: Request) {
   const { userId } = await auth()
 
@@ -79,6 +109,39 @@ export async function POST(req: Request) {
 
   if (session.department !== student.department || session.year !== student.year) {
     return NextResponse.json({ error: "Session not valid for this student" }, { status: 403 })
+  }
+
+  // Geo-fence: require valid coordinates and ensure student is near campus
+  const hasCampusCoordinates = CAMPUS_LATITUDE !== 0 && CAMPUS_LONGITUDE !== 0
+
+  if (hasCampusCoordinates) {
+    if (!latitude || !longitude) {
+      return NextResponse.json(
+        {
+          error:
+            "Location access is required to mark attendance. Please enable location and try again.",
+          errorCode: "LOCATION_REQUIRED",
+        },
+        { status: 400 }
+      )
+    }
+
+    const distance = distanceInMeters(latitude, longitude, CAMPUS_LATITUDE, CAMPUS_LONGITUDE)
+
+    if (distance > GEOFENCE_RADIUS_METERS) {
+      const remaining = Math.max(0, distance - GEOFENCE_RADIUS_METERS)
+      return NextResponse.json(
+        {
+          error:
+            "You appear to be outside the college campus. Attendance can only be marked from within campus.",
+          errorCode: "GEOFENCE_VIOLATION",
+          distanceMeters: Math.round(distance),
+          radiusMeters: Math.round(GEOFENCE_RADIUS_METERS),
+          remainingMeters: Math.round(remaining),
+        },
+        { status: 403 }
+      )
+    }
   }
 
   const existing = await attendanceModel.findUnique({

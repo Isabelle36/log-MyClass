@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useEffect, useRef, useState } from "react"
+import { toast } from "sonner"
 
 type TeacherRow = {
   id: string
@@ -44,8 +45,6 @@ export default function AdminTeachersManager() {
 
   const [loading, setLoading] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
-  const [message, setMessage] = useState("")
-  const [error, setError] = useState("")
   const [hasLoadedTeachers, setHasLoadedTeachers] = useState(false)
 
   const teachersRequestRef = useRef(0)
@@ -55,7 +54,6 @@ export default function AdminTeachersManager() {
   const fetchTeachers = async (filters?: Partial<TeacherFilters>) => {
     const requestId = ++teachersRequestRef.current
     setLoading(true)
-    setError("")
 
     try {
       const url = new URL("/api/admin/teachers", window.location.origin)
@@ -78,7 +76,7 @@ export default function AdminTeachersManager() {
       if (!res.ok) {
         if (requestId === teachersRequestRef.current) {
           setTeachers([])
-          setError(data.error ?? "Failed to fetch teachers")
+          toast.error(data.error ?? "Failed to fetch teachers")
         }
         return
       }
@@ -88,7 +86,7 @@ export default function AdminTeachersManager() {
       }
     } catch {
       if (requestId === teachersRequestRef.current) {
-        setError("Failed to fetch teachers")
+        toast.error("Failed to fetch teachers")
         setTeachers([])
       }
     } finally {
@@ -105,13 +103,11 @@ export default function AdminTeachersManager() {
     }
 
     if (deletePhraseInput.trim() !== deletePhrase) {
-      setError("Delete phrase does not match. Please type the exact phrase.")
+      toast.error("Delete phrase does not match. Please type the exact phrase.")
       return
     }
 
     setActionLoading(true)
-    setError("")
-    setMessage("")
 
     try {
       const res = await fetch(`/api/admin/teachers/${deleteTarget.id}`, {
@@ -120,17 +116,17 @@ export default function AdminTeachersManager() {
       const data = (await res.json()) as { error?: string }
 
       if (!res.ok) {
-        setError(data.error ?? "Failed to delete teacher")
+        toast.error(data.error ?? "Failed to delete teacher")
         return
       }
 
-      setMessage("Teacher deleted successfully")
+      toast.success("Teacher deleted successfully")
       setDeleteOpen(false)
       setDeleteTarget(null)
       setDeletePhraseInput("")
       await fetchTeachers()
     } catch {
-      setError("Failed to delete teacher")
+      toast.error("Failed to delete teacher")
     } finally {
       setActionLoading(false)
     }
@@ -216,8 +212,6 @@ export default function AdminTeachersManager() {
               </p>
             </div>
 
-            {message ? <p className="text-sm font-medium text-emerald-700">{message}</p> : null}
-            {error ? <p className="text-sm font-medium text-red-600">{error}</p> : null}
           </div>
         </CardHeader>
 

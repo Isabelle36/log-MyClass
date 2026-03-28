@@ -8,6 +8,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Alert02Icon, CheckmarkCircle02Icon, InformationCircleIcon } from "@hugeicons/core-free-icons"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 type Status = "GOOD" | "WARNING" | "CRITICAL"
 
@@ -28,6 +29,8 @@ type DashboardData = {
     status: Status
     actionPlan: string
     neededForOverall75: number
+    totalScheduledSessions?: number
+    totalExcused?: number
   }
   warning: {
     atRiskCount: number
@@ -58,7 +61,7 @@ type DashboardData = {
     sessionId: string
     subject: string
     date: string
-    status: "PRESENT" | "ABSENT"
+    status: "PRESENT" | "ABSENT" | "EXCUSED"
     markedAt: string | null
   }>
   predictions: {
@@ -83,12 +86,14 @@ export function StudentDashboardClient() {
         const result = (await res.json()) as DashboardData
 
         if (!res.ok) {
+          toast.error(result.error ?? "Failed to load dashboard")
           setData(result)
           return
         }
 
         setData(result)
       } catch {
+        toast.error("Failed to load dashboard")
         setData({ error: "Failed to load dashboard" } as DashboardData)
       } finally {
         setLoading(false)
@@ -103,7 +108,11 @@ export function StudentDashboardClient() {
   }
 
   if (!data || data.error) {
-    return <p className="text-sm text-red-600">{data?.error ?? "Failed to load dashboard"}</p>
+    return (
+      <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+        <p className="text-sm text-red-700">{data?.error ?? "Failed to load dashboard"}</p>
+      </div>
+    )
   }
 
   const { student, summary, warning, subjects, history } = data
@@ -163,7 +172,10 @@ export function StudentDashboardClient() {
                   {statusIcon(summary.status)}
                 </div>
                 <p className="mt-1 text-sm text-slate-600">
-                  {summary.totalAttended} of {summary.totalSessions} classes attended
+                  {summary.totalAttended} of {summary.totalSessions} counted classes attended
+                  {typeof summary.totalExcused === "number" && summary.totalExcused > 0
+                    ? ` (${summary.totalExcused} excused and not counted)`
+                    : ""}
                 </p>
                 <p className="mt-1 text-sm font-medium text-slate-800">{summary.actionPlan}</p>
               </div>
@@ -205,6 +217,11 @@ export function StudentDashboardClient() {
       <Card>
         <CardHeader>
           <CardTitle>Your Subjects</CardTitle>
+          <p className="mt-1 text-xs text-slate-500">
+            Legend: <span className="font-semibold text-emerald-600">Present</span>,
+            <span className="ml-1 font-semibold text-rose-600">Absent</span>,
+            <span className="ml-1 font-semibold text-amber-600">Excused</span>
+          </p>
         </CardHeader>
         <CardContent className="space-y-3">
           {subjects.length === 0 ? (
@@ -239,6 +256,11 @@ export function StudentDashboardClient() {
       <Card>
         <CardHeader>
           <CardTitle>Attendance History</CardTitle>
+          <p className="mt-1 text-xs text-slate-500">
+            Legend: <span className="font-semibold text-emerald-600">Present</span>,
+            <span className="ml-1 font-semibold text-rose-600">Absent</span>,
+            <span className="ml-1 font-semibold text-amber-600">Excused</span>
+          </p>
         </CardHeader>
         <CardContent>
           <Table>
@@ -264,6 +286,8 @@ export function StudentDashboardClient() {
                     <TableCell>
                       {entry.status === "PRESENT" ? (
                         <span className="font-medium text-emerald-600">Present</span>
+                      ) : entry.status === "EXCUSED" ? (
+                        <span className="font-medium text-amber-600">Excused</span>
                       ) : (
                         <span className="font-medium text-rose-600">Absent</span>
                       )}

@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma"
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 
+const ALLOWED_DEPARTMENTS = new Set(["BBA", "BCA"])
+
 export async function GET(req: Request) {
   const { userId } = await auth()
 
@@ -28,11 +30,25 @@ export async function GET(req: Request) {
   const url = new URL(req.url)
   const q = url.searchParams.get("q")?.trim() ?? ""
   const yearRaw = url.searchParams.get("year")?.trim() ?? ""
+  const requestedDepartmentRaw = url.searchParams.get("department")?.trim() ?? ""
   const year = Number(yearRaw)
+
+  const requestedDepartment = requestedDepartmentRaw.toUpperCase()
+  const hasDepartmentParam = requestedDepartmentRaw.length > 0
+  const departmentFilter =
+    requestedDepartment === "ALL"
+      ? undefined
+      : hasDepartmentParam
+        ? requestedDepartment
+        : actor.teacher.department
+
+  if (departmentFilter && !ALLOWED_DEPARTMENTS.has(departmentFilter)) {
+    return NextResponse.json({ error: "Invalid department" }, { status: 400 })
+  }
 
   const students = await prisma.student.findMany({
     where: {
-      department: actor.teacher.department,
+      ...(departmentFilter ? { department: departmentFilter } : {}),
       ...(yearRaw && Number.isInteger(year) ? { year } : {}),
       ...(q
         ? {
@@ -60,7 +76,7 @@ export async function GET(req: Request) {
 
   return NextResponse.json({
     count: students.length,
-    department: actor.teacher.department,
+    department: departmentFilter,
     students,
   })
 }
