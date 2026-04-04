@@ -8,6 +8,7 @@ const attendanceModel = prisma.attendance
 const CAMPUS_LATITUDE = Number(process.env.CAMPUS_LATITUDE ?? "0")
 const CAMPUS_LONGITUDE = Number(process.env.CAMPUS_LONGITUDE ?? "0")
 const GEOFENCE_RADIUS_METERS = Number(process.env.GEOFENCE_RADIUS_METERS ?? "150")
+const GEOFENCE_GRACE_METERS = Number(process.env.GEOFENCE_GRACE_METERS ?? "2")
 
 function toRadians(value: number) {
   return (value * Math.PI) / 180
@@ -144,18 +145,20 @@ export async function POST(req: Request) {
         : GEOFENCE_RADIUS_METERS
 
     const distance = distanceInMeters(latitude, longitude, targetLatitude, targetLongitude)
+    const allowedRadius = geofenceRadius + Math.max(0, GEOFENCE_GRACE_METERS)
 
-    if (distance > geofenceRadius) {
+    if (distance > allowedRadius) {
       const remaining = Math.max(0, distance - geofenceRadius)
+      const round1 = (value: number) => Math.round(value * 10) / 10
       return NextResponse.json(
         {
           error: hasSessionCoordinates
             ? "You appear to be outside the teacher's classroom range."
             : "You appear to be outside the college campus. Attendance can only be marked from within campus.",
           errorCode: "GEOFENCE_VIOLATION",
-          distanceMeters: Math.round(distance),
-          radiusMeters: Math.round(geofenceRadius),
-          remainingMeters: Math.round(remaining),
+          distanceMeters: round1(distance),
+          radiusMeters: round1(geofenceRadius),
+          remainingMeters: round1(remaining),
         },
         { status: 403 }
       )

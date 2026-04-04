@@ -17,14 +17,13 @@ type SessionCreateResponse = {
 
 const YEARS = ["1", "2", "3"]
 const DEPARTMENTS = ["BCA", "BBA"]
-const TEST_GEOFENCE_RADIUS_METERS = 10
-
 export default function AttendanceSessionPanel() {
   const router = useRouter()
   const [department, setDepartment] = useState("BCA")
   const [subject, setSubject] = useState("")
   const [year, setYear] = useState("1")
   const [durationSeconds, setDurationSeconds] = useState("300")
+  const [radiusMeters, setRadiusMeters] = useState("10")
   const [creating, setCreating] = useState(false)
 
   const subjectOptions = useMemo(() => {
@@ -41,14 +40,20 @@ export default function AttendanceSessionPanel() {
 
   const createSession = async () => {
     const seconds = Number(durationSeconds)
+    const radius = Number(radiusMeters)
 
-    if (!resolvedSubject || !year || !durationSeconds) {
+    if (!resolvedSubject || !year || !durationSeconds || !radiusMeters) {
       toast.error("Please fill all session fields")
       return
     }
 
     if (!Number.isInteger(seconds) || seconds < 30 || seconds > 300) {
       toast.error("Duration must be between 30 and 300 seconds")
+      return
+    }
+
+    if (!Number.isFinite(radius) || radius < 5 || radius > 300) {
+      toast.error("Radius must be between 5 and 300 meters")
       return
     }
 
@@ -83,7 +88,7 @@ export default function AttendanceSessionPanel() {
           durationSeconds: seconds,
           latitude: teacherLocation.coords.latitude,
           longitude: teacherLocation.coords.longitude,
-          radiusMeters: TEST_GEOFENCE_RADIUS_METERS,
+          radiusMeters: radius,
         }),
       })
 
@@ -104,7 +109,7 @@ export default function AttendanceSessionPanel() {
 
   return (
     <div className="space-y-3">
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-5">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-6">
         <div>
           <label className="text-[13px] font-medium tracking-[-0.2px] text-[#2d2d2d]">Class</label>
           <DropdownSelect
@@ -160,6 +165,21 @@ export default function AttendanceSessionPanel() {
           />
         </div>
 
+        <div>
+          <label className="text-[13px] font-medium tracking-[-0.2px] text-[#2d2d2d]">Radius (m)</label>
+          <Input
+            type="number"
+            min={5}
+            max={300}
+            step={1}
+            inputMode="numeric"
+            value={radiusMeters}
+            onChange={(event) => setRadiusMeters(event.target.value)}
+            disabled={creating}
+            className="mt-1 h-[44px] rounded-[12px] border-[0.5px] border-[#c0c0c0] bg-[#f9f9f9] px-3 text-[15px] tracking-[-0.2px]"
+          />
+        </div>
+
         <div className="md:pt-[23px]">
           <Button
             type="button"
@@ -174,6 +194,7 @@ export default function AttendanceSessionPanel() {
 
       <p className="text-[12px] tracking-[-0.2px] text-[#707070]">
         Starting a session will open a dedicated QR page with live timer and attendance updates.
+        Radius controls how close students must be to mark attendance.
       </p>
     </div>
   )

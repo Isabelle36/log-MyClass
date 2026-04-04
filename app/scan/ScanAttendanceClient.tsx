@@ -81,14 +81,25 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
         const formatDistance = (meters?: number) => {
           if (typeof meters !== "number") return ""
           if (meters >= 1000) return `${(meters / 1000).toFixed(2)} km`
-          return `${Math.round(meters)} m`
+          if (meters >= 10) return `${meters.toFixed(0)} m`
+          return `${meters.toFixed(1)} m`
         }
 
         const distanceText = formatDistance(data.distanceMeters)
-        const remainingText = formatDistance(data.remainingMeters)
         const radiusText = formatDistance(data.radiusMeters)
-        const msg =
-          `${distanceText ? `You are about ${distanceText} from the session location. ` : ""}${radiusText ? `Allowed range is ${radiusText}. ` : ""}${remainingText ? `Move about ${remainingText} closer and try again. ` : ""}Attendance can only be marked inside allowed classroom range.`
+        const remainingValue = typeof data.remainingMeters === "number" ? data.remainingMeters : undefined
+        const remainingText = formatDistance(remainingValue)
+
+        let msg = "You're outside the classroom range for this session."
+        if (distanceText && radiusText) {
+          msg = `You're ${distanceText} from the session location. Allowed: ${radiusText}.`
+        }
+        if (remainingValue !== undefined) {
+          msg += remainingValue >= 1
+            ? ` Move about ${remainingText} closer and try again.`
+            : " You're right at the boundary. Move a little closer and try again."
+        }
+        msg += " Attendance can only be marked inside the classroom range."
         setErrorMessage(msg)
         toast.error(msg)
         return
