@@ -6,7 +6,7 @@ export default function Hero() {
     <section
       className=" before:absolute before:top-0 before:left-0 before:w-full
     before:h-full before:content-[''] before:opacity-[0.01] before:z-10 before:pointer-events-none
-    before:bg-[url('https://www.ui-layouts.com/noise.gif')] relative isolate min-h-[70vh] overflow-hidden px-6 pb-16 pt-34 md:min-h-screen md:pb-24 md:pt-38"
+    before:bg-[url('https://www.ui-layouts.com/noise.gif')] relative isolate min-h-[76vh] overflow-hidden px-6 pb-16 pt-34 md:min-h-screen md:pb-24 md:pt-38"
       style={{
         background:
           "linear-gradient(176deg, #4489D8 -1.69%, #93C5F7 40.02%, #FFF 90.78%)",
