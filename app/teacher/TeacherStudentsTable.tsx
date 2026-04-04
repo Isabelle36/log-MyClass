@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { DropdownSelect } from "@/components/ui/dropdown-select"
 import {
   Dialog,
   DialogContent,
@@ -9,11 +10,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
-import { X } from "lucide-react"
+import { Search } from "lucide-react"
 
 const DEPARTMENTS = ["BBA", "BCA"]
 
@@ -238,175 +237,184 @@ export default function TeacherStudentsTable() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-2 sm:flex-row">
-        <div className="relative sm:max-w-40">
-          <select
-            value={department}
-            onChange={(event) => setDepartment(event.target.value)}
-            disabled={loading}
-            className="h-9 w-full appearance-none rounded-4xl border border-input bg-background px-3 pr-10 text-sm"
-          >
-            <option value="all">All Departments</option>
-            {DEPARTMENTS.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-          <svg
-            className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-            viewBox="0 0 20 20"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path d="M6 8l4 4 4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+      <div className="flex items-end justify-between gap-3">
+        <div className="min-w-0 flex-1 overflow-x-auto pb-1">
+          <div className="flex min-w-max items-center gap-[10px]">
+            <label className="flex h-[43px] w-[320px] items-center gap-[9px] rounded-[10px] border-[0.4px] border-[#afafaf] bg-[#f9f9f9] px-[9px] py-[3px]">
+              <Search className="h-5 w-5 text-[#606060]" strokeWidth={1.8} />
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search name, email, roll no"
+                aria-label="Search students"
+                disabled={loading}
+                className="w-full bg-transparent text-[14px] tracking-[-0.2px] text-[#3a3a3a] outline-none placeholder:text-[#8a8a8a]"
+              />
+            </label>
+
+            <div className="h-[40px] min-w-[182px] shrink-0">
+              <DropdownSelect
+                value={department}
+                onValueChange={setDepartment}
+                disabled={loading}
+                options={[
+                  { value: "all", label: "All Departments" },
+                  ...DEPARTMENTS.map((option) => ({ value: option, label: option })),
+                ]}
+                triggerClassName="h-full min-w-[182px] rounded-[10px] border-[0.5px] border-[#c0c0c0] bg-white px-3 text-[14px] tracking-[-0.28px] text-[#3d3d3d]"
+                chevronClassName="h-[15px] w-[15px] text-[#767676]"
+                ariaLabel="Filter by department"
+              />
+            </div>
+
+            <div className="h-[40px] min-w-[138px] shrink-0">
+              <DropdownSelect
+                value={year}
+                onValueChange={setYear}
+                disabled={loading}
+                options={[
+                  { value: "all", label: "All Years" },
+                  { value: "1", label: "Year 1" },
+                  { value: "2", label: "Year 2" },
+                  { value: "3", label: "Year 3" },
+                ]}
+                triggerClassName="h-full min-w-[138px] rounded-[10px] border-[0.5px] border-[#c0c0c0] bg-white px-3 text-[14px] tracking-[-0.28px] text-[#3d3d3d]"
+                chevronClassName="h-[15px] w-[15px] text-[#767676]"
+                ariaLabel="Filter by year"
+              />
+            </div>
+          </div>
         </div>
-        <Input
-          placeholder="Search name, email, roll no"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          disabled={loading}
-        />
-        <div className="relative sm:max-w-28">
-          <select
-            value={year}
-            onChange={(event) => setYear(event.target.value)}
+
+        <div className="flex shrink-0 items-center gap-[10px]">
+          <Button
+            type="button"
+            onClick={fetchStudents}
             disabled={loading}
-            className="h-9 w-full appearance-none rounded-4xl border border-input bg-background px-3 pr-10 text-sm"
+            className="h-[43px] rounded-[10px] border border-[#1e1f24] bg-[linear-gradient(180deg,#1e2027_0%,#14161b_100%)] px-4 text-[14px] font-semibold text-white"
           >
-            <option value="all">All Years</option>
-            <option value="1">Year 1</option>
-            <option value="2">Year 2</option>
-            <option value="3">Year 3</option>
-          </select>
-          <svg
-            className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-            viewBox="0 0 20 20"
-            fill="none"
-            aria-hidden="true"
+            {loading ? "Searching..." : "Search"}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              setWarningResult(null)
+              setWarningOpen(true)
+            }}
+            disabled={loading}
+            className="h-[43px] rounded-[10px] border-[0.5px] border-[#c0c0c0] bg-white px-4 text-[14px] font-medium text-[#2f2f2f]"
           >
-            <path d="M6 8l4 4 4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+            Email Below 75%
+          </Button>
         </div>
-        <Button type="button" onClick={fetchStudents} disabled={loading}>
-          {loading ? "Searching..." : "Search"}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => {
-            setWarningResult(null)
-            setWarningOpen(true)
-          }}
-          disabled={loading}
-        >
-          Email Below 75%
-        </Button>
       </div>
 
-      {subtitle ? <p className="text-xs text-muted-foreground">Showing {subtitle}</p> : null}
+      {subtitle ? <p className="text-[13px] tracking-[-0.26px] text-[#6d6d6d]">Showing {subtitle}</p> : null}
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Year</TableHead>
-            <TableHead>Roll No</TableHead>
-            <TableHead>Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {students.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={5} className="text-center text-muted-foreground">
-                No students found.
-              </TableCell>
-            </TableRow>
-          ) : (
-            students.map((student) => (
-              <TableRow key={student.id}>
-                <TableCell>{student.fullName}</TableCell>
-                <TableCell>{student.email ?? "-"}</TableCell>
-                <TableCell>{student.year}</TableCell>
-                <TableCell>{student.rollNo}</TableCell>
-                <TableCell>{student.isActive ? "Active" : "Inactive"}</TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[920px] border-separate border-spacing-y-[9px]">
+          <thead>
+            <tr className="text-left text-[15px] font-semibold tracking-[-0.3px] text-black">
+              <th className="px-3 py-1">Name</th>
+              <th className="px-3 py-1">Email</th>
+              <th className="px-3 py-1">Year</th>
+              <th className="px-3 py-1">Roll No</th>
+              <th className="px-3 py-1">Status</th>
+            </tr>
+          </thead>
+          <tbody className="text-[14px] tracking-[-0.2px] text-[#2a2a2a]">
+            {loading ? (
+              Array.from({ length: 6 }).map((_, index) => (
+                <tr key={`teacher-students-loading-${index}`}>
+                  <td className="rounded-l-[10px] border border-r-0 border-[#ececec] bg-[#fbfbfb] px-3 py-[11px]">
+                    <div className="h-5 w-32 animate-pulse rounded-full bg-[#ececec]" />
+                  </td>
+                  <td className="border-y border-[#ececec] bg-[#fbfbfb] px-3 py-[11px]">
+                    <div className="h-5 w-44 animate-pulse rounded-full bg-[#ececec]" />
+                  </td>
+                  <td className="border-y border-[#ececec] bg-[#fbfbfb] px-3 py-[11px]">
+                    <div className="h-5 w-16 animate-pulse rounded-full bg-[#ececec]" />
+                  </td>
+                  <td className="border-y border-[#ececec] bg-[#fbfbfb] px-3 py-[11px]">
+                    <div className="h-5 w-16 animate-pulse rounded-full bg-[#ececec]" />
+                  </td>
+                  <td className="rounded-r-[10px] border border-l-0 border-[#ececec] bg-[#fbfbfb] px-3 py-[11px]">
+                    <div className="h-5 w-20 animate-pulse rounded-full bg-[#ececec]" />
+                  </td>
+                </tr>
+              ))
+            ) : students.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="rounded-[10px] border border-[#ececec] bg-[#fbfbfb] px-3 py-8 text-center text-[14px] text-[#737373]"
+                >
+                  No students found.
+                </td>
+              </tr>
+            ) : (
+              students.map((student) => (
+                <tr key={student.id}>
+                  <td className="rounded-l-[10px] border border-r-0 border-[#ececec] bg-[#fbfbfb] px-3 py-[11px] font-medium text-[#1f1f1f]">
+                    {student.fullName}
+                  </td>
+                  <td className="border-y border-[#ececec] bg-[#fbfbfb] px-3 py-[11px]">{student.email ?? "-"}</td>
+                  <td className="border-y border-[#ececec] bg-[#fbfbfb] px-3 py-[11px]">{student.year}</td>
+                  <td className="border-y border-[#ececec] bg-[#fbfbfb] px-3 py-[11px]">{student.rollNo}</td>
+                  <td className="rounded-r-[10px] border border-l-0 border-[#ececec] bg-[#fbfbfb] px-3 py-[11px]">
+                    {student.isActive ? "Active" : "Inactive"}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
       <Dialog open={warningOpen} onOpenChange={setWarningOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-[560px] rounded-[28px] border border-[#d9d9d9] bg-white p-7 shadow-none ring-0">
           <DialogHeader>
-            <DialogTitle>Email Below 75% Warning</DialogTitle>
-            <button
-              type="button"
-              onClick={() => setWarningOpen(false)}
-              className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
-            >
-              <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
-            </button>
-            <DialogDescription>
+            <DialogTitle className="text-[34px] font-semibold tracking-[-0.8px] text-[#17181b] md:text-[30px]">
+              Email Below 75% Warning
+            </DialogTitle>
+            <DialogDescription className="text-[14px] leading-[1.35] tracking-[-0.2px] text-[#6f6f6f]">
               Select department and year to identify and email students below 75% attendance.
             </DialogDescription>
           </DialogHeader>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div className="relative">
-              <select
-                value={warningDepartment}
-                onChange={(event) => setWarningDepartment(event.target.value)}
-                className="h-9 w-full appearance-none rounded-4xl border border-input bg-background px-3 pr-10 text-sm"
-              >
-                {DEPARTMENTS.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              <svg
-                className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-                viewBox="0 0 20 20"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path d="M6 8l4 4 4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
+            <DropdownSelect
+              value={warningDepartment}
+              onValueChange={setWarningDepartment}
+              options={DEPARTMENTS.map((option) => ({ value: option, label: option }))}
+              triggerClassName="h-[44px] rounded-full border-[0.5px] border-[#c0c0c0] bg-[#f9f9f9] px-4 text-[15px] tracking-[-0.2px] text-[#2f2f2f]"
+              chevronClassName="h-[15px] w-[15px] text-[#767676]"
+              ariaLabel="Warning department"
+            />
 
-            <div className="relative">
-              <select
-                value={warningYear}
-                onChange={(event) => setWarningYear(event.target.value)}
-                className="h-9 w-full appearance-none rounded-4xl border border-input bg-background px-3 pr-10 text-sm"
-              >
-                <option value="1">1st Year</option>
-                <option value="2">2nd Year</option>
-                <option value="3">3rd Year</option>
-              </select>
-              <svg
-                className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-                viewBox="0 0 20 20"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path d="M6 8l4 4 4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
+            <DropdownSelect
+              value={warningYear}
+              onValueChange={setWarningYear}
+              options={[
+                { value: "1", label: "1st Year" },
+                { value: "2", label: "2nd Year" },
+                { value: "3", label: "3rd Year" },
+              ]}
+              triggerClassName="h-[44px] rounded-full border-[0.5px] border-[#c0c0c0] bg-[#f9f9f9] px-4 text-[15px] tracking-[-0.2px] text-[#2f2f2f]"
+              chevronClassName="h-[15px] w-[15px] text-[#767676]"
+              ariaLabel="Warning year"
+            />
           </div>
 
           {warningResult ? (
-            <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
+            <div className="rounded-[12px] border border-[#d6dce3] bg-[#f8fafc] p-3 text-[12px] tracking-[-0.12px] text-[#4b5563]">
               {warningResult.totalStudents === 0 ? (
-                <p className="text-slate-600">
+                <p className="text-[#687384]">
                   No students found in {warningResult.department} Year {warningResult.year}.
                 </p>
               ) : warningResult.atRiskCount === 0 ? (
-                <p className="text-slate-600">
+                <p className="text-[#687384]">
                   No students below 75% in {warningResult.department} Year {warningResult.year}.
                 </p>
               ) : (
@@ -415,14 +423,14 @@ export default function TeacherStudentsTable() {
                     {warningResult.department} Year {warningResult.year}: {warningResult.atRiskCount} below 75%
                     ({warningResult.recipientCount} with email)
                   </p>
-                  <p className="mt-1 text-slate-500">
+                  <p className="mt-1 text-[#7a8595]">
                     Based on {warningResult.totalSessions} sessions for {warningResult.totalStudents} active students.
                   </p>
 
                   {warningResult.atRiskStudents.length > 0 ? (
-                    <div className="mt-3 max-h-36 overflow-auto rounded border border-slate-200 bg-white">
+                    <div className="mt-3 max-h-36 overflow-auto rounded-[10px] border border-[#d8dee8] bg-white">
                       <table className="w-full text-left text-xs">
-                        <thead className="sticky top-0 bg-slate-100">
+                        <thead className="sticky top-0 bg-[#f0f4f8]">
                           <tr>
                             <th className="px-2 py-1 font-medium">Student</th>
                             <th className="px-2 py-1 font-medium">Roll</th>
@@ -446,8 +454,12 @@ export default function TeacherStudentsTable() {
             </div>
           ) : null}
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setWarningOpen(false)}>
+          <DialogFooter className="flex-wrap gap-2 sm:justify-start">
+            <Button
+              variant="outline"
+              onClick={() => setWarningOpen(false)}
+              className="h-[42px] rounded-full border-[0.5px] border-[#c8c8c8] bg-[#f2f2f2] px-5 text-[14px] font-medium text-[#2c2c2c]"
+            >
               Cancel
             </Button>
             <Button
@@ -455,6 +467,7 @@ export default function TeacherStudentsTable() {
               variant="outline"
               onClick={downloadCSV}
               disabled={warningLoading || !warningResult || warningResult.atRiskStudents.length === 0}
+              className="h-[42px] rounded-full border-[0.5px] border-[#d0d0d0] bg-[#f5f5f5] px-5 text-[14px] font-medium text-[#6a6a6a] disabled:opacity-70"
             >
               Download CSV
             </Button>
@@ -462,6 +475,7 @@ export default function TeacherStudentsTable() {
               type="button"
               onClick={() => void prepareLowAttendanceWarnings()}
               disabled={warningLoading}
+              className="h-[42px] rounded-full border border-[#1e1f24] bg-[linear-gradient(180deg,#1e2027_0%,#14161b_100%)] px-5 text-[14px] font-semibold tracking-[-0.2px] text-white hover:brightness-105"
             >
               {warningLoading ? "Finding..." : "Find Below 75%"}
             </Button>
@@ -469,7 +483,7 @@ export default function TeacherStudentsTable() {
               type="button"
               onClick={() => void sendWarningEmail()}
               disabled={warningSending || !warningResult || warningResult.atRiskStudents.length === 0}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="h-[42px] rounded-full border border-[#1e1f24] bg-[linear-gradient(180deg,#1e2027_0%,#14161b_100%)] px-5 text-[14px] font-semibold tracking-[-0.2px] text-white hover:brightness-105 disabled:opacity-60"
             >
               {warningSending ? "Sending..." : "Send Email"}
             </Button>

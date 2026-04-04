@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { DropdownSelect } from "@/components/ui/dropdown-select"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -14,7 +15,6 @@ export default function CreateStudentInviteTeacher() {
   const [year, setYear] = useState("1")
   const [rollNo, setRollNo] = useState("")
   const [status, setStatus] = useState<InviteStatus>("idle")
-  const [message, setMessage] = useState("")
 
   async function createInvite() {
     if (!fullName || !email || !year || !rollNo) {
@@ -22,7 +22,6 @@ export default function CreateStudentInviteTeacher() {
     }
 
     setStatus("loading")
-    setMessage("")
 
     try {
       const res = await fetch("/api/teacher/student-invite", {
@@ -56,12 +55,13 @@ export default function CreateStudentInviteTeacher() {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="w-full max-w-[760px] space-y-3">
       <Input
         placeholder="Student full name"
         value={fullName}
         onChange={(event) => setFullName(event.target.value)}
         disabled={status === "loading"}
+        className="h-[44px] rounded-[12px] border-[0.5px] border-[#c0c0c0] bg-[#f9f9f9] px-3 text-[15px] tracking-[-0.2px]"
       />
 
       <Input
@@ -70,28 +70,33 @@ export default function CreateStudentInviteTeacher() {
         value={email}
         onChange={(event) => setEmail(event.target.value)}
         disabled={status === "loading"}
+        className="h-[44px] rounded-[12px] border-[0.5px] border-[#c0c0c0] bg-[#f9f9f9] px-3 text-[15px] tracking-[-0.2px]"
       />
 
       <div className="grid grid-cols-2 gap-2">
-        <select
+        <DropdownSelect
           value={department}
-          onChange={(event) => setDepartment(event.target.value)}
+          onValueChange={setDepartment}
           disabled={status === "loading"}
-          className="h-9 rounded-4xl border border-border bg-input/30 px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-        >
-          <option value="BBA">BBA</option>
-          <option value="BCA">BCA</option>
-        </select>
-        <select
+          options={[
+            { value: "BBA", label: "BBA" },
+            { value: "BCA", label: "BCA" },
+          ]}
+          triggerClassName="h-[44px] rounded-[12px] border-[0.5px] border-[#c0c0c0] bg-[#f9f9f9] px-3 text-[15px] tracking-[-0.2px]"
+          ariaLabel="Student department"
+        />
+        <DropdownSelect
           value={year}
-          onChange={(event) => setYear(event.target.value)}
+          onValueChange={setYear}
           disabled={status === "loading"}
-          className="h-9 rounded-4xl border border-border bg-input/30 px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-        >
-          <option value="1">1st Year</option>
-          <option value="2">2nd Year</option>
-          <option value="3">3rd Year</option>
-        </select>
+          options={[
+            { value: "1", label: "1st Year" },
+            { value: "2", label: "2nd Year" },
+            { value: "3", label: "3rd Year" },
+          ]}
+          triggerClassName="h-[44px] rounded-[12px] border-[0.5px] border-[#c0c0c0] bg-[#f9f9f9] px-3 text-[15px] tracking-[-0.2px]"
+          ariaLabel="Student year"
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-2">
@@ -101,14 +106,18 @@ export default function CreateStudentInviteTeacher() {
           value={rollNo}
           onChange={(event) => setRollNo(event.target.value)}
           disabled={status === "loading"}
+          className="h-[44px] rounded-[12px] border-[0.5px] border-[#c0c0c0] bg-[#f9f9f9] px-3 text-[15px] tracking-[-0.2px]"
         />
       </div>
 
-      <Button type="button" onClick={createInvite} disabled={status === "loading"}>
+      <Button
+        type="button"
+        onClick={createInvite}
+        disabled={status === "loading"}
+        className="h-[44px] rounded-full border border-[#1e1f24] bg-[linear-gradient(180deg,#1e2027_0%,#14161b_100%)] px-5 text-[15px] font-semibold tracking-[-0.3px] text-white"
+      >
         {status === "loading" ? "Creating..." : "Create Student Invite"}
       </Button>
-
-
     </div>
   )
 }

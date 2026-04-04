@@ -105,6 +105,9 @@ model Session {
   year       Int
   subject    String
   createdBy  String   
+  geofenceLatitude Float?
+  geofenceLongitude Float?
+  geofenceRadiusMeters Int @default(10)
   expiresAt  DateTime
   createdAt  DateTime @default(now())
 

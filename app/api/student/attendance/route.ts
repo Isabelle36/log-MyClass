@@ -2,13 +2,9 @@ import { prisma } from "@/lib/prisma"
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 
-const attendanceModel = prisma.attendance as any
+const attendanceModel = prisma.attendance
 
-// Campus geo-fence configuration.
-// Set these in your env, e.g.:
-// CAMPUS_LATITUDE=12.9716
-// CAMPUS_LONGITUDE=77.5946
-// GEOFENCE_RADIUS_METERS=40
+// Fallback campus geo-fence for legacy sessions that don't store teacher location.
 const CAMPUS_LATITUDE = Number(process.env.CAMPUS_LATITUDE ?? "0")
 const CAMPUS_LONGITUDE = Number(process.env.CAMPUS_LONGITUDE ?? "0")
 const GEOFENCE_RADIUS_METERS = Number(process.env.GEOFENCE_RADIUS_METERS ?? "150")
@@ -95,6 +91,9 @@ export async function POST(req: Request) {
       id: true,
       department: true,
       year: true,
+      geofenceLatitude: true,
+      geofenceLongitude: true,
+      geofenceRadiusMeters: true,
       expiresAt: true,
     },
   })
@@ -107,14 +106,25 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Session expired" }, { status: 410 })
   }
 
-  if (session.department !== student.department || session.year !== student.year) {
-    return NextResponse.json({ error: "Session not valid for this student" }, { status: 403 })
+  const sessionDepartment = session.department.trim().toUpperCase()
+  const studentDepartment = student.department.trim().toUpperCase()
+
+  if (sessionDepartment !== studentDepartment || session.year !== student.year) {
+    return NextResponse.json(
+      {
+        error: "This QR session belongs to a different class/year for your account.",
+        errorCode: "SESSION_CLASS_MISMATCH",
+      },
+      { status: 403 }
+    )
   }
 
-  // Geo-fence: require valid coordinates and ensure student is near campus
+  // Geo-fence: prefer per-session teacher location; fallback to campus coordinates for legacy sessions.
+  const hasSessionCoordinates =
+    typeof session.geofenceLatitude === "number" && typeof session.geofenceLongitude === "number"
   const hasCampusCoordinates = CAMPUS_LATITUDE !== 0 && CAMPUS_LONGITUDE !== 0
 
-  if (hasCampusCoordinates) {
+  if (hasSessionCoordinates || hasCampusCoordinates) {
     if (!latitude || !longitude) {
       return NextResponse.json(
         {
@@ -126,17 +136,25 @@ export async function POST(req: Request) {
       )
     }
 
-    const distance = distanceInMeters(latitude, longitude, CAMPUS_LATITUDE, CAMPUS_LONGITUDE)
+    const targetLatitude = hasSessionCoordinates ? session.geofenceLatitude! : CAMPUS_LATITUDE
+    const targetLongitude = hasSessionCoordinates ? session.geofenceLongitude! : CAMPUS_LONGITUDE
+    const geofenceRadius =
+      hasSessionCoordinates && Number.isFinite(session.geofenceRadiusMeters)
+        ? Math.max(5, session.geofenceRadiusMeters)
+        : GEOFENCE_RADIUS_METERS
 
-    if (distance > GEOFENCE_RADIUS_METERS) {
-      const remaining = Math.max(0, distance - GEOFENCE_RADIUS_METERS)
+    const distance = distanceInMeters(latitude, longitude, targetLatitude, targetLongitude)
+
+    if (distance > geofenceRadius) {
+      const remaining = Math.max(0, distance - geofenceRadius)
       return NextResponse.json(
         {
-          error:
-            "You appear to be outside the college campus. Attendance can only be marked from within campus.",
+          error: hasSessionCoordinates
+            ? "You appear to be outside the teacher's classroom range."
+            : "You appear to be outside the college campus. Attendance can only be marked from within campus.",
           errorCode: "GEOFENCE_VIOLATION",
           distanceMeters: Math.round(distance),
-          radiusMeters: Math.round(GEOFENCE_RADIUS_METERS),
+          radiusMeters: Math.round(geofenceRadius),
           remainingMeters: Math.round(remaining),
         },
         { status: 403 }

@@ -188,6 +188,9 @@ exports.Prisma.SessionScalarFieldEnum = {
   year: 'year',
   subject: 'subject',
   createdBy: 'createdBy',
+  geofenceLatitude: 'geofenceLatitude',
+  geofenceLongitude: 'geofenceLongitude',
+  geofenceRadiusMeters: 'geofenceRadiusMeters',
   expiresAt: 'expiresAt',
   createdAt: 'createdAt'
 };

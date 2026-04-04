@@ -223,15 +223,28 @@ export async function GET(req: Request) {
       return NextResponse.json({ count: 0, logs: [] })
     }
 
+    const sessionIds = sessions.map((session) => session.id)
+
     // Get unique students relevant to these sessions' dept/year combos
     const sessionDeptsYears = [...new Set(sessions.map(s => `${s.department}-${s.year}`))]
     const relevantStudents = await prisma.student.findMany({
       where: {
-        OR: sessionDeptsYears.map(dy => {
-          const [dept, y] = dy.split('-')
-          return { department: { equals: dept, mode: "insensitive" }, year: Number(y) }
-        }),
-        isActive: true, // Optional: only active students
+        OR: [
+          {
+            isActive: true,
+            OR: sessionDeptsYears.map(dy => {
+              const [dept, y] = dy.split('-')
+              return { department: { equals: dept, mode: "insensitive" }, year: Number(y) }
+            }),
+          },
+          {
+            attendances: {
+              some: {
+                sessionId: { in: sessionIds },
+              },
+            },
+          },
+        ],
       },
       select: {
         id: true,
@@ -242,8 +255,6 @@ export async function GET(req: Request) {
         rollNo: true,
       },
     })
-
-    const sessionIds = sessions.map((session) => session.id)
 
     // Fetch existing attendances for these sessions
     const attendances = await attendanceModel.findMany({

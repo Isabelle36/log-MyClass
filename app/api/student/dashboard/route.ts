@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/prisma"
+import { getSubjectsForDepartmentYear } from "@/lib/curriculum"
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 
-const attendanceModel = prisma.attendance as any
+const attendanceModel = prisma.attendance
 
 type AttendanceRow = {
   id: string
@@ -47,6 +48,10 @@ function projectedPercentage(present: number, total: number, attendNext = 0, mis
   const nextTotal = total + attendNext + missNext
   const nextPresent = present + attendNext
   return calculatePercentage(nextPresent, nextTotal)
+}
+
+function normalizeSubject(value: string) {
+  return value.trim().toLowerCase().replace(/\s+/g, " ")
 }
 
 export async function GET() {
@@ -129,19 +134,53 @@ export async function GET() {
 
   const typedAttendances = attendances as AttendanceRow[]
 
-  const totalSessions = eligibleSessions.length
-  const totalAttended = typedAttendances.filter((attendance) => attendance.status === "PRESENT").length
-  const totalExcused = typedAttendances.filter((attendance) => attendance.status === "EXCUSED").length
-  const effectiveTotalSessions = Math.max(0, totalSessions - totalExcused)
+  const configuredSubjects = getSubjectsForDepartmentYear(student.department, student.year)
+  const canonicalSubjectByNormalized = new Map(
+    configuredSubjects.map((subject) => [normalizeSubject(subject), subject])
+  )
+
+  const eligibleCurriculumSessions = eligibleSessions
+    .map((session) => {
+      const canonicalSubject = canonicalSubjectByNormalized.get(normalizeSubject(session.subject))
+      if (!canonicalSubject) {
+        return null
+      }
+
+      return {
+        ...session,
+        subject: canonicalSubject,
+      }
+    })
+    .filter((session): session is { id: string; subject: string; createdAt: Date } => session !== null)
+
+  const eligibleCurriculumSessionIds = new Set(eligibleCurriculumSessions.map((session) => session.id))
+
+  const typedCurriculumAttendances = typedAttendances
+    .filter((attendance) => eligibleCurriculumSessionIds.has(attendance.sessionId))
+    .map((attendance) => {
+      const canonicalSubject = canonicalSubjectByNormalized.get(normalizeSubject(attendance.session.subject))
+      return {
+        ...attendance,
+        session: {
+          ...attendance.session,
+          subject: canonicalSubject ?? attendance.session.subject,
+        },
+      }
+    })
+
+  const totalSessions = eligibleCurriculumSessions.length
+  const totalAttended = typedCurriculumAttendances.filter((attendance) => attendance.status === "PRESENT").length
+  const totalExcused = typedCurriculumAttendances.filter((attendance) => attendance.status === "EXCUSED").length
+  const effectiveTotalSessions = totalSessions
 
   const attendancePercentage = calculatePercentage(totalAttended, effectiveTotalSessions)
   const neededForOverall75 = classesNeededFor75(totalAttended, effectiveTotalSessions)
 
   const attendanceBySessionId = new Map<string, AttendanceRow>(
-    typedAttendances.map((attendance) => [attendance.sessionId, attendance])
+    typedCurriculumAttendances.map((attendance) => [attendance.sessionId, attendance])
   )
 
-  const history = eligibleSessions.slice(0, 40).map((session) => {
+  const history = eligibleCurriculumSessions.slice(0, 40).map((session) => {
     const attendance = attendanceBySessionId.get(session.id)
 
     const status = attendance?.status === "PRESENT"
@@ -170,7 +209,7 @@ export async function GET() {
 
   const subjectStats = new Map<string, { present: number; total: number; excused: number }>()
 
-  eligibleSessions.forEach((session) => {
+  eligibleCurriculumSessions.forEach((session) => {
     if (!subjectStats.has(session.subject)) {
       subjectStats.set(session.subject, { present: 0, total: 0, excused: 0 })
     }
@@ -180,7 +219,7 @@ export async function GET() {
     }
   })
 
-  typedAttendances.forEach((attendance) => {
+  typedCurriculumAttendances.forEach((attendance) => {
     const stat = subjectStats.get(attendance.session.subject)
     if (!stat) return
     if (attendance.status === "PRESENT") {
@@ -192,7 +231,7 @@ export async function GET() {
 
   const subjects = Array.from(subjectStats.entries())
     .map(([subject, stat]) => {
-      const effectiveTotal = Math.max(0, stat.total - stat.excused)
+      const effectiveTotal = stat.total
       const percentage = calculatePercentage(stat.present, effectiveTotal)
       const neededToRecover = classesNeededFor75(stat.present, effectiveTotal)
 
