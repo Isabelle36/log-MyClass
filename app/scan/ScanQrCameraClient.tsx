@@ -61,6 +61,7 @@ export default function ScanQrCameraClient() {
     controlsRef.current?.stop()
     controlsRef.current = null
     setScanning(false)
+    setScanError(null)
     router.replace(`/scan?sessionId=${encodeURIComponent(sessionId)}`)
   }
 
@@ -112,6 +113,7 @@ export default function ScanQrCameraClient() {
               return
             }
 
+            setScanError(null)
             toast.success("QR scanned")
             onResolvedSession(resolved)
             return
@@ -160,6 +162,7 @@ export default function ScanQrCameraClient() {
       return
     }
 
+    setScanError(null)
     onResolvedSession(sessionId)
   }
 
