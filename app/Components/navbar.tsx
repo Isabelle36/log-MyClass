@@ -19,10 +19,10 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-7 text-[18px] font-normal tracking-[-0.03em] text-[#605e5e] md:flex">
           <Link href="/" className="transition hover:text-[#101112]">How It Works</Link>
-          <Link href="/features" className="transition hover:text-[#101112]">Features</Link>
-          <Link href="/blog" className="transition hover:text-[#101112]">Blog</Link>
-          <Link href="/pricing" className="transition hover:text-[#101112]">Pricing</Link>
-          <Link href="/faqs" className="transition hover:text-[#101112]">FAQs</Link>
+          <Link href="/" className="transition hover:text-[#101112]">Features</Link>
+          <Link href="/" className="transition hover:text-[#101112]">Blog</Link>
+          <Link href="/" className="transition hover:text-[#101112]">Pricing</Link>
+          <Link href="/" className="transition hover:text-[#101112]">FAQs</Link>
         </div>
 
         <Link href="/sign-in">
