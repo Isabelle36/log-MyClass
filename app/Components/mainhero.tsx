@@ -13,11 +13,19 @@ export default function Hero() {
       }}
     >
       <Image
+        src="/phone-clouded-bg.png"
+        alt=""
+        fill
+        priority
+        className="pointer-events-none scale-125 -z-10 object-cover object-top opacity-95 md:hidden"
+        sizes="100vw"
+      />
+      <Image
         src="/Clouded Bg.png"
         alt=""
         fill
         priority
-        className="pointer-events-none -z-10 object-cover object-top opacity-95 md:opacity-70"
+        className="pointer-events-none -z-10 hidden object-cover object-top opacity-70 md:block"
         sizes="100vw"
       />
 
