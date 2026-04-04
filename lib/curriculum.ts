@@ -7,7 +7,7 @@ export const CURRICULUM_BY_DEPARTMENT_YEAR: Record<string, Record<number, string
       "Digital Circuits",
       "Algorithm",
       "English",
-      "Computer C Language",
+      "C Language Theory",
       "Mathematics",
       "Urdu / Hindi",
       "Programming C",

@@ -13,7 +13,7 @@ async function isAdmin(clerkUserId: string) {
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { userId } = await auth()
 
@@ -25,7 +25,7 @@ export async function DELETE(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
-  const teacherId = params.id
+  const { id: teacherId } = await params
 
   try {
     const teacher = await prisma.teacher.findUnique({

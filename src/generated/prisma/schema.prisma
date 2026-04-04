@@ -100,13 +100,16 @@ model Attendance {
 }
 
 model Session {
-  id         String   @id @default(uuid())
-  department String
-  year       Int
-  subject    String
-  createdBy  String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
+  id                   String   @id @default(uuid())
+  department           String
+  year                 Int
+  subject              String
+  createdBy            String
+  geofenceLatitude     Float?
+  geofenceLongitude    Float?
+  geofenceRadiusMeters Int      @default(10)
+  expiresAt            DateTime
+  createdAt            DateTime @default(now())
 
   attendances Attendance[]
 }

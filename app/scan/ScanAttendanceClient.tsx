@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 
 export default function ScanAttendanceClient({ sessionId }: { sessionId: string }) {
@@ -12,7 +12,7 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const autoAttemptedRef = useRef(false)
 
-  const markAttendance = async () => {
+  const markAttendance = useCallback(async () => {
     setLoading(true)
 
     const payload: { sessionId: string; latitude?: number; longitude?: number } = { sessionId }
@@ -47,6 +47,8 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
       error?: string
       errorCode?: string
       distanceMeters?: number
+      remainingMeters?: number
+      radiusMeters?: number
     }
 
     if (!res.ok) {
@@ -68,11 +70,25 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
         return
       }
 
+      if (data.errorCode === "SESSION_CLASS_MISMATCH") {
+        const msg = "This QR belongs to a different class/year than your account. Ask your teacher for the correct class QR."
+        setErrorMessage(msg)
+        toast.error(msg)
+        return
+      }
+
       if (data.errorCode === "GEOFENCE_VIOLATION") {
-        const distanceText =
-          typeof data.distanceMeters === "number" ? `You seem to be about ${data.distanceMeters}m away. ` : ""
+        const formatDistance = (meters?: number) => {
+          if (typeof meters !== "number") return ""
+          if (meters >= 1000) return `${(meters / 1000).toFixed(2)} km`
+          return `${Math.round(meters)} m`
+        }
+
+        const distanceText = formatDistance(data.distanceMeters)
+        const remainingText = formatDistance(data.remainingMeters)
+        const radiusText = formatDistance(data.radiusMeters)
         const msg =
-          `${distanceText}You must be inside the classroom to mark attendance. Please move closer and try again.`
+          `${distanceText ? `You are about ${distanceText} from the session location. ` : ""}${radiusText ? `Allowed range is ${radiusText}. ` : ""}${remainingText ? `Move about ${remainingText} closer and try again. ` : ""}Attendance can only be marked inside allowed classroom range.`
         setErrorMessage(msg)
         toast.error(msg)
         return
@@ -91,7 +107,7 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
     setTimeout(() => {
       router.push("/student")
     }, 1500)
-  }
+  }, [router, sessionId])
 
   useEffect(() => {
     if (autoAttemptedRef.current) {
@@ -99,8 +115,15 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
     }
 
     autoAttemptedRef.current = true
-    void markAttendance()
-  }, [sessionId])
+
+    const timeoutId = window.setTimeout(() => {
+      void markAttendance()
+    }, 0)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+    }
+  }, [markAttendance])
 
   return (
     <div

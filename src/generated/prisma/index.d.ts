@@ -8196,10 +8196,16 @@ export namespace Prisma {
 
   export type SessionAvgAggregateOutputType = {
     year: number | null
+    geofenceLatitude: number | null
+    geofenceLongitude: number | null
+    geofenceRadiusMeters: number | null
   }
 
   export type SessionSumAggregateOutputType = {
     year: number | null
+    geofenceLatitude: number | null
+    geofenceLongitude: number | null
+    geofenceRadiusMeters: number | null
   }
 
   export type SessionMinAggregateOutputType = {
@@ -8208,6 +8214,9 @@ export namespace Prisma {
     year: number | null
     subject: string | null
     createdBy: string | null
+    geofenceLatitude: number | null
+    geofenceLongitude: number | null
+    geofenceRadiusMeters: number | null
     expiresAt: Date | null
     createdAt: Date | null
   }
@@ -8218,6 +8227,9 @@ export namespace Prisma {
     year: number | null
     subject: string | null
     createdBy: string | null
+    geofenceLatitude: number | null
+    geofenceLongitude: number | null
+    geofenceRadiusMeters: number | null
     expiresAt: Date | null
     createdAt: Date | null
   }
@@ -8228,6 +8240,9 @@ export namespace Prisma {
     year: number
     subject: number
     createdBy: number
+    geofenceLatitude: number
+    geofenceLongitude: number
+    geofenceRadiusMeters: number
     expiresAt: number
     createdAt: number
     _all: number
@@ -8236,10 +8251,16 @@ export namespace Prisma {
 
   export type SessionAvgAggregateInputType = {
     year?: true
+    geofenceLatitude?: true
+    geofenceLongitude?: true
+    geofenceRadiusMeters?: true
   }
 
   export type SessionSumAggregateInputType = {
     year?: true
+    geofenceLatitude?: true
+    geofenceLongitude?: true
+    geofenceRadiusMeters?: true
   }
 
   export type SessionMinAggregateInputType = {
@@ -8248,6 +8269,9 @@ export namespace Prisma {
     year?: true
     subject?: true
     createdBy?: true
+    geofenceLatitude?: true
+    geofenceLongitude?: true
+    geofenceRadiusMeters?: true
     expiresAt?: true
     createdAt?: true
   }
@@ -8258,6 +8282,9 @@ export namespace Prisma {
     year?: true
     subject?: true
     createdBy?: true
+    geofenceLatitude?: true
+    geofenceLongitude?: true
+    geofenceRadiusMeters?: true
     expiresAt?: true
     createdAt?: true
   }
@@ -8268,6 +8295,9 @@ export namespace Prisma {
     year?: true
     subject?: true
     createdBy?: true
+    geofenceLatitude?: true
+    geofenceLongitude?: true
+    geofenceRadiusMeters?: true
     expiresAt?: true
     createdAt?: true
     _all?: true
@@ -8365,6 +8395,9 @@ export namespace Prisma {
     year: number
     subject: string
     createdBy: string
+    geofenceLatitude: number | null
+    geofenceLongitude: number | null
+    geofenceRadiusMeters: number
     expiresAt: Date
     createdAt: Date
     _count: SessionCountAggregateOutputType | null
@@ -8394,6 +8427,9 @@ export namespace Prisma {
     year?: boolean
     subject?: boolean
     createdBy?: boolean
+    geofenceLatitude?: boolean
+    geofenceLongitude?: boolean
+    geofenceRadiusMeters?: boolean
     expiresAt?: boolean
     createdAt?: boolean
     attendances?: boolean | Session$attendancesArgs<ExtArgs>
@@ -8406,6 +8442,9 @@ export namespace Prisma {
     year?: boolean
     subject?: boolean
     createdBy?: boolean
+    geofenceLatitude?: boolean
+    geofenceLongitude?: boolean
+    geofenceRadiusMeters?: boolean
     expiresAt?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["session"]>
@@ -8416,6 +8455,9 @@ export namespace Prisma {
     year?: boolean
     subject?: boolean
     createdBy?: boolean
+    geofenceLatitude?: boolean
+    geofenceLongitude?: boolean
+    geofenceRadiusMeters?: boolean
     expiresAt?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["session"]>
@@ -8426,11 +8468,14 @@ export namespace Prisma {
     year?: boolean
     subject?: boolean
     createdBy?: boolean
+    geofenceLatitude?: boolean
+    geofenceLongitude?: boolean
+    geofenceRadiusMeters?: boolean
     expiresAt?: boolean
     createdAt?: boolean
   }
 
-  export type SessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "department" | "year" | "subject" | "createdBy" | "expiresAt" | "createdAt", ExtArgs["result"]["session"]>
+  export type SessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "department" | "year" | "subject" | "createdBy" | "geofenceLatitude" | "geofenceLongitude" | "geofenceRadiusMeters" | "expiresAt" | "createdAt", ExtArgs["result"]["session"]>
   export type SessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     attendances?: boolean | Session$attendancesArgs<ExtArgs>
     _count?: boolean | SessionCountOutputTypeDefaultArgs<ExtArgs>
@@ -8449,6 +8494,9 @@ export namespace Prisma {
       year: number
       subject: string
       createdBy: string
+      geofenceLatitude: number | null
+      geofenceLongitude: number | null
+      geofenceRadiusMeters: number
       expiresAt: Date
       createdAt: Date
     }, ExtArgs["result"]["session"]>
@@ -8880,6 +8928,9 @@ export namespace Prisma {
     readonly year: FieldRef<"Session", 'Int'>
     readonly subject: FieldRef<"Session", 'String'>
     readonly createdBy: FieldRef<"Session", 'String'>
+    readonly geofenceLatitude: FieldRef<"Session", 'Float'>
+    readonly geofenceLongitude: FieldRef<"Session", 'Float'>
+    readonly geofenceRadiusMeters: FieldRef<"Session", 'Int'>
     readonly expiresAt: FieldRef<"Session", 'DateTime'>
     readonly createdAt: FieldRef<"Session", 'DateTime'>
   }
@@ -10394,6 +10445,9 @@ export namespace Prisma {
     year: 'year',
     subject: 'subject',
     createdBy: 'createdBy',
+    geofenceLatitude: 'geofenceLatitude',
+    geofenceLongitude: 'geofenceLongitude',
+    geofenceRadiusMeters: 'geofenceRadiusMeters',
     expiresAt: 'expiresAt',
     createdAt: 'createdAt'
   };
@@ -10955,6 +11009,9 @@ export namespace Prisma {
     year?: IntFilter<"Session"> | number
     subject?: StringFilter<"Session"> | string
     createdBy?: StringFilter<"Session"> | string
+    geofenceLatitude?: FloatNullableFilter<"Session"> | number | null
+    geofenceLongitude?: FloatNullableFilter<"Session"> | number | null
+    geofenceRadiusMeters?: IntFilter<"Session"> | number
     expiresAt?: DateTimeFilter<"Session"> | Date | string
     createdAt?: DateTimeFilter<"Session"> | Date | string
     attendances?: AttendanceListRelationFilter
@@ -10966,6 +11023,9 @@ export namespace Prisma {
     year?: SortOrder
     subject?: SortOrder
     createdBy?: SortOrder
+    geofenceLatitude?: SortOrderInput | SortOrder
+    geofenceLongitude?: SortOrderInput | SortOrder
+    geofenceRadiusMeters?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
     attendances?: AttendanceOrderByRelationAggregateInput
@@ -10980,6 +11040,9 @@ export namespace Prisma {
     year?: IntFilter<"Session"> | number
     subject?: StringFilter<"Session"> | string
     createdBy?: StringFilter<"Session"> | string
+    geofenceLatitude?: FloatNullableFilter<"Session"> | number | null
+    geofenceLongitude?: FloatNullableFilter<"Session"> | number | null
+    geofenceRadiusMeters?: IntFilter<"Session"> | number
     expiresAt?: DateTimeFilter<"Session"> | Date | string
     createdAt?: DateTimeFilter<"Session"> | Date | string
     attendances?: AttendanceListRelationFilter
@@ -10991,6 +11054,9 @@ export namespace Prisma {
     year?: SortOrder
     subject?: SortOrder
     createdBy?: SortOrder
+    geofenceLatitude?: SortOrderInput | SortOrder
+    geofenceLongitude?: SortOrderInput | SortOrder
+    geofenceRadiusMeters?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
     _count?: SessionCountOrderByAggregateInput
@@ -11009,6 +11075,9 @@ export namespace Prisma {
     year?: IntWithAggregatesFilter<"Session"> | number
     subject?: StringWithAggregatesFilter<"Session"> | string
     createdBy?: StringWithAggregatesFilter<"Session"> | string
+    geofenceLatitude?: FloatNullableWithAggregatesFilter<"Session"> | number | null
+    geofenceLongitude?: FloatNullableWithAggregatesFilter<"Session"> | number | null
+    geofenceRadiusMeters?: IntWithAggregatesFilter<"Session"> | number
     expiresAt?: DateTimeWithAggregatesFilter<"Session"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"Session"> | Date | string
   }
@@ -11508,6 +11577,9 @@ export namespace Prisma {
     year: number
     subject: string
     createdBy: string
+    geofenceLatitude?: number | null
+    geofenceLongitude?: number | null
+    geofenceRadiusMeters?: number
     expiresAt: Date | string
     createdAt?: Date | string
     attendances?: AttendanceCreateNestedManyWithoutSessionInput
@@ -11519,6 +11591,9 @@ export namespace Prisma {
     year: number
     subject: string
     createdBy: string
+    geofenceLatitude?: number | null
+    geofenceLongitude?: number | null
+    geofenceRadiusMeters?: number
     expiresAt: Date | string
     createdAt?: Date | string
     attendances?: AttendanceUncheckedCreateNestedManyWithoutSessionInput
@@ -11530,6 +11605,9 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     subject?: StringFieldUpdateOperationsInput | string
     createdBy?: StringFieldUpdateOperationsInput | string
+    geofenceLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    geofenceLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    geofenceRadiusMeters?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attendances?: AttendanceUpdateManyWithoutSessionNestedInput
@@ -11541,6 +11619,9 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     subject?: StringFieldUpdateOperationsInput | string
     createdBy?: StringFieldUpdateOperationsInput | string
+    geofenceLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    geofenceLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    geofenceRadiusMeters?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attendances?: AttendanceUncheckedUpdateManyWithoutSessionNestedInput
@@ -11552,6 +11633,9 @@ export namespace Prisma {
     year: number
     subject: string
     createdBy: string
+    geofenceLatitude?: number | null
+    geofenceLongitude?: number | null
+    geofenceRadiusMeters?: number
     expiresAt: Date | string
     createdAt?: Date | string
   }
@@ -11562,6 +11646,9 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     subject?: StringFieldUpdateOperationsInput | string
     createdBy?: StringFieldUpdateOperationsInput | string
+    geofenceLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    geofenceLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    geofenceRadiusMeters?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11572,6 +11659,9 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     subject?: StringFieldUpdateOperationsInput | string
     createdBy?: StringFieldUpdateOperationsInput | string
+    geofenceLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    geofenceLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    geofenceRadiusMeters?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12090,18 +12180,35 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type SessionCountOrderByAggregateInput = {
     id?: SortOrder
     department?: SortOrder
     year?: SortOrder
     subject?: SortOrder
     createdBy?: SortOrder
+    geofenceLatitude?: SortOrder
+    geofenceLongitude?: SortOrder
+    geofenceRadiusMeters?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
   }
 
   export type SessionAvgOrderByAggregateInput = {
     year?: SortOrder
+    geofenceLatitude?: SortOrder
+    geofenceLongitude?: SortOrder
+    geofenceRadiusMeters?: SortOrder
   }
 
   export type SessionMaxOrderByAggregateInput = {
@@ -12110,6 +12217,9 @@ export namespace Prisma {
     year?: SortOrder
     subject?: SortOrder
     createdBy?: SortOrder
+    geofenceLatitude?: SortOrder
+    geofenceLongitude?: SortOrder
+    geofenceRadiusMeters?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -12120,12 +12230,34 @@ export namespace Prisma {
     year?: SortOrder
     subject?: SortOrder
     createdBy?: SortOrder
+    geofenceLatitude?: SortOrder
+    geofenceLongitude?: SortOrder
+    geofenceRadiusMeters?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
   }
 
   export type SessionSumOrderByAggregateInput = {
     year?: SortOrder
+    geofenceLatitude?: SortOrder
+    geofenceLongitude?: SortOrder
+    geofenceRadiusMeters?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type SuspiciousLogCountOrderByAggregateInput = {
@@ -12365,6 +12497,14 @@ export namespace Prisma {
     connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
   }
 
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type AttendanceUpdateManyWithoutSessionNestedInput = {
     create?: XOR<AttendanceCreateWithoutSessionInput, AttendanceUncheckedCreateWithoutSessionInput> | AttendanceCreateWithoutSessionInput[] | AttendanceUncheckedCreateWithoutSessionInput[]
     connectOrCreate?: AttendanceCreateOrConnectWithoutSessionInput | AttendanceCreateOrConnectWithoutSessionInput[]
@@ -12590,6 +12730,33 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type StudentCreateWithoutUserInput = {
@@ -12873,6 +13040,9 @@ export namespace Prisma {
     year: number
     subject: string
     createdBy: string
+    geofenceLatitude?: number | null
+    geofenceLongitude?: number | null
+    geofenceRadiusMeters?: number
     expiresAt: Date | string
     createdAt?: Date | string
   }
@@ -12883,6 +13053,9 @@ export namespace Prisma {
     year: number
     subject: string
     createdBy: string
+    geofenceLatitude?: number | null
+    geofenceLongitude?: number | null
+    geofenceRadiusMeters?: number
     expiresAt: Date | string
     createdAt?: Date | string
   }
@@ -12938,6 +13111,9 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     subject?: StringFieldUpdateOperationsInput | string
     createdBy?: StringFieldUpdateOperationsInput | string
+    geofenceLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    geofenceLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    geofenceRadiusMeters?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12948,6 +13124,9 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     subject?: StringFieldUpdateOperationsInput | string
     createdBy?: StringFieldUpdateOperationsInput | string
+    geofenceLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    geofenceLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    geofenceRadiusMeters?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

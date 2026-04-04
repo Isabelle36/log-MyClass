@@ -1,9 +1,25 @@
-# Task: Show all attendance logs (including ABSENT) recent→oldest by default in admin, matching per-student view with edit icons for ABSENT
+# Admin Dashboard UI Improvement Plan (Light Mode, Pinterest-Inspired)
 
-## Steps:
-- [x] Step 1: Update backend `/api/admin/students/attendance/route.ts` to generate full session history for "all students" (no studentId): fetch recent sessions → unique students → synthesize ABSENT where missing.
-- [x] Step 2: Minor UI polish in `AdminStudentsManager.tsx` (bulk-excuse disable for "all", text updates).
-- [x] Step 3.1: Fix edit endpoint `[attendanceId]/route.ts` to handle synthetic ABSENT IDs (create record if `id` format `session:student`).
-- [ ] Step 3.2: Test edits work for both real & synthetic ABSENT.
+✅ **Step 1: Create TODO.md and install dependencies** ✅ (recharts, framer-motion, lucide-react installed)
 
-Current: Done
+✅ **Step 2: Create new admin components** ✅ (AttendanceChart, QuickActions, SidebarNav)
+
+✅ **Step 3: Enhance globals.css** ✅ (glassmorphism, purple/teal gradients, 3D hovers, custom scrollbar)
+
+✅ **Step 4: Transform app/admin/page.tsx** ✅ (Pinterest hero, sidebar layout, animated sections, charts integrated)
+
+✅ **Step 5: Revamp AdminDashboardOverview.tsx** ✅ (3D gradient metric cards, rotating icons, live data animations)
+
+## Remaining Steps:
+
+**Step 6: Upgrade AdminStudentsManager.tsx & AdminTeachersManager.tsx**
+- Glassmorphic tables, pill filters, row animations
+- Bulk select, hover glows
+
+**Step 7: Final Test & Completion** 
+- `npm run dev`
+- Responsive testing across devices
+- Production-ready polish
+
+**Progress:** 5/7 complete 🚀
+

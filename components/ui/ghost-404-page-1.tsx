@@ -15,7 +15,6 @@ const containerVariants = {
     y: 0,
     transition: {
       duration: 0.7,
-      ease: [0.43, 0.13, 0.23, 0.96],
       delayChildren: 0.1,
       staggerChildren: 0.1
     }
@@ -31,8 +30,7 @@ const itemVariants = {
     opacity: 1, 
     y: 0,
     transition: {
-      duration: 0.6,
-      ease: [0.43, 0.13, 0.23, 0.96]
+      duration: 0.6
     }
   }
 };
@@ -50,8 +48,7 @@ const numberVariants = {
     y: 0,
     rotate: 0,
     transition: {
-      duration: 0.8,
-      ease: [0.43, 0.13, 0.23, 0.96]
+      duration: 0.8
     }
   }
 };
@@ -69,8 +66,7 @@ const ghostVariants = {
     y: 0,
     rotate: 0,
     transition: {
-      duration: 0.6,
-      ease: [0.43, 0.13, 0.23, 0.96]
+      duration: 0.6
     }
   },
   hover: {
@@ -79,12 +75,9 @@ const ghostVariants = {
     rotate: [0, -5, 5, -5, 0],
     transition: {
       duration: 0.8,
-      ease: "easeInOut",
       rotate: {
         duration: 2,
-        ease: "linear",
-        repeat: Infinity,
-        repeatType: "reverse"
+        repeat: Infinity
       }
     }
   },
@@ -93,9 +86,7 @@ const ghostVariants = {
     transition: {
       y: {
         duration: 2,
-        ease: "easeInOut",
-        repeat: Infinity,
-        repeatType: "reverse"
+        repeat: Infinity
       }
     }
   }
@@ -163,8 +154,7 @@ export function NotFound() {
             whileHover={{ 
               scale: 1.05,
               transition: {
-                duration: 0.3,
-                ease: [0.43, 0.13, 0.23, 0.96]
+                duration: 0.3
               }
             }}
             className="flex justify-center"

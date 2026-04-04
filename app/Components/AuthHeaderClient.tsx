@@ -7,7 +7,7 @@ import {
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-const HIDDEN_HEADER_PREFIXES = ["/sign-in", "/sign-up", "/teacher/invite", "/student/invite", "/no-access"]
+const HIDDEN_HEADER_PREFIXES = ["/sign-in", "/sign-up", "/teacher/invite", "/teacher-attendance", "/teacher", "/student", "/scan", "/no-access", "/admin"]
 const HIDDEN_HEADER_EXACT = ["/"]
 
 export default function AuthHeaderClient() {

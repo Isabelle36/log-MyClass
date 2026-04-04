@@ -5,6 +5,7 @@ import { NextResponse } from "next/server"
 
 const ALLOWED_DEPARTMENTS = new Set(["BCA", "BBA"])
 const ALLOWED_YEARS = new Set([1, 2, 3])
+const DEFAULT_SESSION_GEOFENCE_METERS = Number(process.env.DEFAULT_SESSION_GEOFENCE_METERS ?? "10")
 
 export async function POST(req: Request) {
   const { userId } = await auth()
@@ -35,12 +36,20 @@ export async function POST(req: Request) {
     department?: string
     year?: number
     durationSeconds?: number
+    latitude?: number
+    longitude?: number
+    radiusMeters?: number
   }
 
   const subject = String(body.subject ?? "").trim()
   const department = String(body.department ?? actor.teacher.department).trim()
   const year = Number(body.year)
   const durationSeconds = Number(body.durationSeconds)
+  const latitude = typeof body.latitude === "number" ? body.latitude : Number.NaN
+  const longitude = typeof body.longitude === "number" ? body.longitude : Number.NaN
+  const radiusMetersRaw =
+    typeof body.radiusMeters === "number" ? body.radiusMeters : DEFAULT_SESSION_GEOFENCE_METERS
+  const radiusMeters = Math.max(5, Math.min(150, Math.round(radiusMetersRaw)))
 
   if (!subject || !Number.isInteger(year) || !Number.isInteger(durationSeconds)) {
     return NextResponse.json(
@@ -78,6 +87,20 @@ export async function POST(req: Request) {
     )
   }
 
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+    return NextResponse.json(
+      {
+        error:
+          "Teacher location is required to start a session. Please enable location and try again.",
+      },
+      { status: 400 }
+    )
+  }
+
+  if (Math.abs(latitude) > 90 || Math.abs(longitude) > 180) {
+    return NextResponse.json({ error: "Invalid latitude/longitude provided" }, { status: 400 })
+  }
+
   const expiresAt = new Date(Date.now() + durationSeconds * 1000)
   const session = await prisma.session.create({
     data: {
@@ -85,6 +108,9 @@ export async function POST(req: Request) {
       department,
       year,
       createdBy: actor.id,
+      geofenceLatitude: latitude,
+      geofenceLongitude: longitude,
+      geofenceRadiusMeters: radiusMeters,
       expiresAt,
     },
     select: {
@@ -92,6 +118,7 @@ export async function POST(req: Request) {
       subject: true,
       department: true,
       year: true,
+      geofenceRadiusMeters: true,
       expiresAt: true,
       createdAt: true,
     },
@@ -112,5 +139,6 @@ export async function POST(req: Request) {
     session,
     scanUrl,
     totalStudents,
+    geofenceRadiusMeters: session.geofenceRadiusMeters,
   })
 }

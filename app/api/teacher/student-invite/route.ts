@@ -100,11 +100,19 @@ export async function POST(req: Request) {
     )
   }
 
-  const token = randomUUID()
-  const baseUrl = new URL(req.url).origin
-  const redirectUrl = `${baseUrl}/student/invite?token=${encodeURIComponent(token)}`
+  const existingInviteWithEmail = await prisma.studentInvite.findUnique({
+    where: { email },
+    select: {
+      id: true,
+      department: true,
+      year: true,
+      rollNo: true,
+      isUsed: true,
+    },
+  })
 
-  await prisma.studentInvite.upsert({
+  // Prevent assigning a class/roll slot that is already reserved for another email.
+  const existingInviteWithRoll = await prisma.studentInvite.findUnique({
     where: {
       department_year_rollNo: {
         department,
@@ -112,21 +120,65 @@ export async function POST(req: Request) {
         rollNo,
       },
     },
-    update: {
-      fullName,
-      email,
-      token,
-      isUsed: false,
-    },
-    create: {
-      fullName,
-      email,
-      department,
-      year,
-      rollNo,
-      token,
+    select: {
+      id: true,
+      email: true,
     },
   })
+
+  if (existingInviteWithRoll && existingInviteWithRoll.email && existingInviteWithRoll.email !== email) {
+    return NextResponse.json(
+      {
+        error:
+          "This roll number is already reserved by another invite in this class/year. Please use a different roll number.",
+      },
+      { status: 409 }
+    )
+  }
+
+  if (
+    existingInviteWithEmail &&
+    existingInviteWithEmail.department === department &&
+    existingInviteWithEmail.year === year &&
+    existingInviteWithEmail.rollNo === rollNo &&
+    !existingInviteWithEmail.isUsed
+  ) {
+    return NextResponse.json(
+      {
+        error: "Invite already sent to this student. Please ask them to check their email.",
+      },
+      { status: 409 }
+    )
+  }
+
+  const token = randomUUID()
+  const baseUrl = new URL(req.url).origin
+  const redirectUrl = `${baseUrl}/student/invite?token=${encodeURIComponent(token)}`
+
+  if (existingInviteWithEmail) {
+    await prisma.studentInvite.update({
+      where: { email },
+      data: {
+        fullName,
+        department,
+        year,
+        rollNo,
+        token,
+        isUsed: false,
+      },
+    })
+  } else {
+    await prisma.studentInvite.create({
+      data: {
+        fullName,
+        email,
+        department,
+        year,
+        rollNo,
+        token,
+      },
+    })
+  }
 
   const client = await clerkClient()
   await client.invitations.createInvitation({
