@@ -51,6 +51,8 @@ export default function CreateStudentInviteTeacher() {
       setRollNo("")
     } catch {
       toast.error("Unexpected server response. Please try again.")
+    } finally {
+      setStatus("idle")
     }
   }
 

@@ -95,6 +95,11 @@ const ghostVariants = {
 export function NotFound() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
+      <style jsx global>{`
+        header {
+          display: none;
+        }
+      `}</style>
       <AnimatePresence mode="wait">
         <motion.div 
           className="text-center"
@@ -159,7 +164,7 @@ export function NotFound() {
             }}
             className="flex justify-center"
           >
-            <Link href="https://google.com">
+            <Link href="http://log-my-class.vercel.app/">
               <FlowButton text="Find shelter" />
             </Link>
           </motion.div>
@@ -169,7 +174,7 @@ export function NotFound() {
             variants={itemVariants}
           >
             <Link
-              href="#"
+              href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404"
               className="text-[#222222] opacity-50 hover:opacity-70 transition-opacity underline font-dm-sans select-none"
             >
               What means 404?
