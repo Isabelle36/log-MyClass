@@ -10,6 +10,8 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
   const [loading, setLoading] = useState(false)
   const [isRestricted, setIsRestricted] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [locationBlocked, setLocationBlocked] = useState(false)
+  const [locationHint, setLocationHint] = useState<string | null>(null)
   const autoAttemptedRef = useRef(false)
 
   const getCurrentPosition = useCallback(
@@ -20,35 +22,62 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
     []
   )
 
+  const getBestEffortLocation = useCallback(async () => {
+    if (typeof navigator === "undefined" || !("geolocation" in navigator)) {
+      return null
+    }
+
+    // Fast path first: allow cached/network location so marking doesn't feel slow.
+    try {
+      return await getCurrentPosition({
+        enableHighAccuracy: false,
+        timeout: 3500,
+        maximumAge: 120_000,
+      })
+    } catch {
+      // Fall through to high-accuracy request.
+    }
+
+    try {
+      return await getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 7000,
+        maximumAge: 0,
+      })
+    } catch {
+      return null
+    }
+  }, [getCurrentPosition])
+
+  const requestLocationPermission = useCallback(async () => {
+    if (typeof window !== "undefined" && !window.isSecureContext) {
+      setLocationHint("Location permission works only on HTTPS or localhost. Ask your teacher for the normal app link, not an insecure link.")
+      setLocationBlocked(true)
+      return false
+    }
+
+    const position = await getBestEffortLocation()
+    if (!position) {
+      setLocationBlocked(true)
+      setLocationHint("Location is blocked. Enable location for this site in browser settings, then tap Enable Location again.")
+      return false
+    }
+
+    setLocationBlocked(false)
+    setLocationHint(null)
+    return true
+  }, [getBestEffortLocation])
+
   const markAttendance = useCallback(async () => {
     setLoading(true)
+    setLocationHint(null)
 
     const payload: { sessionId: string; latitude?: number; longitude?: number; accuracy?: number } = {
       sessionId,
     }
 
     if (typeof navigator !== "undefined" && "geolocation" in navigator) {
-      let position: GeolocationPosition | null = null
-
-      try {
-        position = await getCurrentPosition({
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0,
-        })
-      } catch {
-        // Fallback allows cached/network-assisted location on devices where high-accuracy lock is slow.
-        try {
-          position = await getCurrentPosition({
-            enableHighAccuracy: false,
-            timeout: 12000,
-            maximumAge: 60_000,
-          })
-        } catch {
-          position = null
-        }
-      }
-
+      const position = await getBestEffortLocation()
       if (position) {
         payload.latitude = position.coords.latitude
         payload.longitude = position.coords.longitude
@@ -86,6 +115,8 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
       if (data.errorCode === "LOCATION_REQUIRED") {
         const msg =
           "Turn on location services and allow this browser to access your location, then try again from the classroom."
+        setLocationBlocked(true)
+        setLocationHint("Tap Enable Location below, then retry attendance.")
         setErrorMessage(msg)
         toast.error(msg)
         return
@@ -133,13 +164,14 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
     }
 
     setIsRestricted(false)
+    setLocationBlocked(false)
     setErrorMessage(null)
     toast.success(data.message ?? "Attendance marked")
 
     setTimeout(() => {
       router.push("/student")
     }, 1500)
-  }, [getCurrentPosition, router, sessionId])
+  }, [getBestEffortLocation, router, sessionId])
 
   useEffect(() => {
     if (autoAttemptedRef.current) {
@@ -149,13 +181,25 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
     autoAttemptedRef.current = true
 
     const timeoutId = window.setTimeout(() => {
-      void markAttendance()
+      void (async () => {
+        await requestLocationPermission()
+        await markAttendance()
+      })()
     }, 0)
 
     return () => {
       window.clearTimeout(timeoutId)
     }
-  }, [markAttendance])
+  }, [markAttendance, requestLocationPermission])
+
+  const enableLocationAndRetry = async () => {
+    const allowed = await requestLocationPermission()
+    if (!allowed) {
+      return
+    }
+
+    void markAttendance()
+  }
 
   return (
     <div
@@ -169,6 +213,13 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
       {loading ? <p className="text-sm">Marking attendance...</p> : null}
       {errorMessage && !loading ? (
         <p className="text-xs text-red-700">{errorMessage}</p>
+      ) : null}
+      {locationHint && !loading ? <p className="text-xs text-amber-700">{locationHint}</p> : null}
+
+      {locationBlocked && !isRestricted ? (
+        <Button type="button" variant="outline" onClick={enableLocationAndRetry} disabled={loading}>
+          Enable Location
+        </Button>
       ) : null}
 
       <Button
