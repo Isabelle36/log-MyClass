@@ -23,7 +23,7 @@ export default function AttendanceSessionPanel() {
   const [subject, setSubject] = useState("")
   const [year, setYear] = useState("1")
   const [durationSeconds, setDurationSeconds] = useState("300")
-  const [radiusMeters, setRadiusMeters] = useState("25")
+  const [radiusMeters, setRadiusMeters] = useState("50")
   const [creating, setCreating] = useState(false)
 
   const subjectOptions = useMemo(() => {
