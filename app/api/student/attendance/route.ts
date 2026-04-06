@@ -9,6 +9,8 @@ const CAMPUS_LATITUDE = Number(process.env.CAMPUS_LATITUDE ?? "0")
 const CAMPUS_LONGITUDE = Number(process.env.CAMPUS_LONGITUDE ?? "0")
 const GEOFENCE_RADIUS_METERS = Number(process.env.GEOFENCE_RADIUS_METERS ?? "150")
 const GEOFENCE_GRACE_METERS = Number(process.env.GEOFENCE_GRACE_METERS ?? "2")
+const MIN_EFFECTIVE_SESSION_GEOFENCE_METERS = Number(process.env.MIN_EFFECTIVE_SESSION_GEOFENCE_METERS ?? "20")
+const MAX_ACCURACY_GRACE_METERS = Number(process.env.MAX_ACCURACY_GRACE_METERS ?? "25")
 
 function toRadians(value: number) {
   return (value * Math.PI) / 180
@@ -76,11 +78,13 @@ export async function POST(req: Request) {
     sessionId?: string
     latitude?: number
     longitude?: number
+    accuracy?: number
   }
 
   const sessionId = String(body.sessionId ?? "").trim()
-  const latitude = typeof body.latitude === "number" ? body.latitude : 0
-  const longitude = typeof body.longitude === "number" ? body.longitude : 0
+  const latitude = typeof body.latitude === "number" ? body.latitude : Number.NaN
+  const longitude = typeof body.longitude === "number" ? body.longitude : Number.NaN
+  const accuracy = typeof body.accuracy === "number" ? body.accuracy : Number.NaN
 
   if (!sessionId) {
     return NextResponse.json({ error: "sessionId is required" }, { status: 400 })
@@ -126,7 +130,7 @@ export async function POST(req: Request) {
   const hasCampusCoordinates = CAMPUS_LATITUDE !== 0 && CAMPUS_LONGITUDE !== 0
 
   if (hasSessionCoordinates || hasCampusCoordinates) {
-    if (!latitude || !longitude) {
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
       return NextResponse.json(
         {
           error:
@@ -137,15 +141,32 @@ export async function POST(req: Request) {
       )
     }
 
+    if (Math.abs(latitude) > 90 || Math.abs(longitude) > 180) {
+      return NextResponse.json(
+        {
+          error: "Invalid latitude/longitude provided.",
+          errorCode: "LOCATION_INVALID",
+        },
+        { status: 400 }
+      )
+    }
+
     const targetLatitude = hasSessionCoordinates ? session.geofenceLatitude! : CAMPUS_LATITUDE
     const targetLongitude = hasSessionCoordinates ? session.geofenceLongitude! : CAMPUS_LONGITUDE
-    const geofenceRadius =
+    const configuredRadius =
       hasSessionCoordinates && Number.isFinite(session.geofenceRadiusMeters)
         ? Math.max(5, session.geofenceRadiusMeters)
         : GEOFENCE_RADIUS_METERS
+    const geofenceRadius = hasSessionCoordinates
+      ? Math.max(configuredRadius, Math.max(5, MIN_EFFECTIVE_SESSION_GEOFENCE_METERS))
+      : configuredRadius
+
+    const accuracyGrace = Number.isFinite(accuracy)
+      ? Math.min(Math.max(0, accuracy), Math.max(0, MAX_ACCURACY_GRACE_METERS))
+      : 0
 
     const distance = distanceInMeters(latitude, longitude, targetLatitude, targetLongitude)
-    const allowedRadius = geofenceRadius + Math.max(0, GEOFENCE_GRACE_METERS)
+    const allowedRadius = geofenceRadius + Math.max(0, GEOFENCE_GRACE_METERS) + accuracyGrace
 
     if (distance > allowedRadius) {
       const remaining = Math.max(0, distance - geofenceRadius)
@@ -159,6 +180,7 @@ export async function POST(req: Request) {
           distanceMeters: round1(distance),
           radiusMeters: round1(geofenceRadius),
           remainingMeters: round1(remaining),
+          accuracyMeters: Number.isFinite(accuracy) ? round1(accuracy) : null,
         },
         { status: 403 }
       )

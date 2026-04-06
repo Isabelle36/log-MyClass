@@ -12,27 +12,48 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const autoAttemptedRef = useRef(false)
 
+  const getCurrentPosition = useCallback(
+    (options: PositionOptions) =>
+      new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, options)
+      }),
+    []
+  )
+
   const markAttendance = useCallback(async () => {
     setLoading(true)
 
-    const payload: { sessionId: string; latitude?: number; longitude?: number } = { sessionId }
+    const payload: { sessionId: string; latitude?: number; longitude?: number; accuracy?: number } = {
+      sessionId,
+    }
 
     if (typeof navigator !== "undefined" && "geolocation" in navigator) {
-      await new Promise<void>((resolve) => {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            payload.latitude = position.coords.latitude
-            payload.longitude = position.coords.longitude
-            resolve()
-          },
-          () => resolve(),
-          {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0,
-          }
-        )
-      })
+      let position: GeolocationPosition | null = null
+
+      try {
+        position = await getCurrentPosition({
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        })
+      } catch {
+        // Fallback allows cached/network-assisted location on devices where high-accuracy lock is slow.
+        try {
+          position = await getCurrentPosition({
+            enableHighAccuracy: false,
+            timeout: 12000,
+            maximumAge: 60_000,
+          })
+        } catch {
+          position = null
+        }
+      }
+
+      if (position) {
+        payload.latitude = position.coords.latitude
+        payload.longitude = position.coords.longitude
+        payload.accuracy = position.coords.accuracy
+      }
     }
 
     const res = await fetch("/api/student/attendance", {
@@ -118,7 +139,7 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
     setTimeout(() => {
       router.push("/student")
     }, 1500)
-  }, [router, sessionId])
+  }, [getCurrentPosition, router, sessionId])
 
   useEffect(() => {
     if (autoAttemptedRef.current) {

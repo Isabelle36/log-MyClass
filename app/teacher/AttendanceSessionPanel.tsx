@@ -23,7 +23,7 @@ export default function AttendanceSessionPanel() {
   const [subject, setSubject] = useState("")
   const [year, setYear] = useState("1")
   const [durationSeconds, setDurationSeconds] = useState("300")
-  const [radiusMeters, setRadiusMeters] = useState("10")
+  const [radiusMeters, setRadiusMeters] = useState("25")
   const [creating, setCreating] = useState(false)
 
   const subjectOptions = useMemo(() => {
@@ -52,8 +52,8 @@ export default function AttendanceSessionPanel() {
       return
     }
 
-    if (!Number.isFinite(radius) || radius < 5 || radius > 300) {
-      toast.error("Radius must be between 5 and 300 meters")
+    if (!Number.isFinite(radius) || radius < 20 || radius > 150) {
+      toast.error("Radius must be between 20 and 150 meters")
       return
     }
 
@@ -169,8 +169,8 @@ export default function AttendanceSessionPanel() {
           <label className="text-[13px] font-medium tracking-[-0.2px] text-[#2d2d2d]">Radius (m)</label>
           <Input
             type="number"
-            min={5}
-            max={300}
+            min={20}
+            max={150}
             step={1}
             inputMode="numeric"
             value={radiusMeters}
@@ -194,7 +194,7 @@ export default function AttendanceSessionPanel() {
 
       <p className="text-[12px] tracking-[-0.2px] text-[#707070]">
         Starting a session will open a dedicated QR page with live timer and attendance updates.
-        Radius controls how close students must be to mark attendance.
+        Radius controls how close students must be to mark attendance. For most classrooms, 25-40m works best.
       </p>
     </div>
   )

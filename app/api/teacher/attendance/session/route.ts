@@ -5,7 +5,7 @@ import { NextResponse } from "next/server"
 
 const ALLOWED_DEPARTMENTS = new Set(["BCA", "BBA"])
 const ALLOWED_YEARS = new Set([1, 2, 3])
-const DEFAULT_SESSION_GEOFENCE_METERS = Number(process.env.DEFAULT_SESSION_GEOFENCE_METERS ?? "10")
+const DEFAULT_SESSION_GEOFENCE_METERS = Number(process.env.DEFAULT_SESSION_GEOFENCE_METERS ?? "50")
 
 export async function POST(req: Request) {
   const { userId } = await auth()
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
   const longitude = typeof body.longitude === "number" ? body.longitude : Number.NaN
   const radiusMetersRaw =
     typeof body.radiusMeters === "number" ? body.radiusMeters : DEFAULT_SESSION_GEOFENCE_METERS
-  const radiusMeters = Math.max(5, Math.min(150, Math.round(radiusMetersRaw)))
+  const radiusMeters = Math.max(20, Math.min(150, Math.round(radiusMetersRaw)))
 
   if (!subject || !Number.isInteger(year) || !Number.isInteger(durationSeconds)) {
     return NextResponse.json(
