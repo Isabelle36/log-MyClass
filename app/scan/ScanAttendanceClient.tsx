@@ -166,6 +166,7 @@ export default function ScanAttendanceClient({ sessionId }: { sessionId: string 
     setIsRestricted(false)
     setLocationBlocked(false)
     setErrorMessage(null)
+    setLoading(false)
     toast.success(data.message ?? "Attendance marked")
 
     setTimeout(() => {

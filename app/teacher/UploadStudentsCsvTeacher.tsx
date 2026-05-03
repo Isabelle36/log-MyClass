@@ -33,7 +33,10 @@ export default function UploadStudentsFileTeacher() {
   }
 
   async function uploadStudentsFile() {
-    if (!file) return
+    if (!file) {
+      toast.error("Please select a file to upload")
+      return
+    }
 
     if (!isSupportedSpreadsheetFile(file)) {
       toast.error("Only .csv, .xlsx, and .xls files are allowed")

@@ -11,6 +11,7 @@ export default function UploadStudentsCsv() {
 
   async function uploadCsv() {
     if (!file) {
+      toast.error("Please select a CSV file")
       return
     }
 
@@ -29,15 +30,14 @@ export default function UploadStudentsCsv() {
 
       if (!res.ok) {
         toast.error(data.error ?? "CSV upload failed")
-        setIsLoading(false)
         return
       }
 
       toast.success(`All ${data.total} students have been successfully imported!`)
       setFile(null)
-      setIsLoading(false)
     } catch {
       toast.error("Something went wrong while uploading the file")
+    } finally {
       setIsLoading(false)
     }
   }

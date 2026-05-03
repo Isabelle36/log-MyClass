@@ -18,6 +18,7 @@ export default function CreateStudentInvite() {
 
   async function createInvite() {
     if (!fullName || !email || !department || !year || !rollNo) {
+      toast.error("Please fill in all fields")
       return
     }
 

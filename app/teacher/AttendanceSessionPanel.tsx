@@ -44,16 +44,19 @@ export default function AttendanceSessionPanel() {
 
     if (!resolvedSubject || !year || !durationSeconds || !radiusMeters) {
       toast.error("Please fill all session fields")
+      setCreating(false)
       return
     }
 
     if (!Number.isInteger(seconds) || seconds < 30 || seconds > 300) {
       toast.error("Duration must be between 30 and 300 seconds")
+      setCreating(false)
       return
     }
 
     if (!Number.isFinite(radius) || radius < 20 || radius > 150) {
       toast.error("Radius must be between 20 and 150 meters")
+      setCreating(false)
       return
     }
 

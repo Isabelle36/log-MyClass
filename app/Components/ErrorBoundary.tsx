@@ -27,7 +27,6 @@ class ErrorBoundary extends React.Component<
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('🔥 App Error:', error, errorInfo);
-    // Here you could send logs to Sentry, LogRocket, etc.
   }
 
   handleRetry = () => {
